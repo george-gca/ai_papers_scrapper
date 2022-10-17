@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "ai-papers-scrapper"
+version = "0.1.0"
+description = "Code to download papers from most important conferences on AI"
+authors = ["George Araujo <george.gcac@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "ai_papers_scrapper"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+scrapy = "^2.6.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
