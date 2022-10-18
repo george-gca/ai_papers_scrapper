@@ -7,7 +7,7 @@
 DOCKERFILE_CONTEXT = $(PWD)
 DOCKERFILE = $(PWD)/Dockerfile
 WORK_DIR = $(PWD)
-RUN_STRING = ./start_here.sh
+RUN_STRING = bash start_here.sh
 
 # ==================================================================
 # Docker settings
