@@ -11,7 +11,7 @@ conferences=(
     # "aaai 2020"
     # "aaai 2021"
     # "aaai 2022"
-    "acl 2017"
+    # "acl 2017"
     # "acl 2018"
     # "acl 2019"
     # "acl 2020"
@@ -98,6 +98,8 @@ conferences=(
     # "wacv 2022 no_subpage"
 )
 
+update_papers_with_code=1
+
 acl_conferences=(
     "acl"
     "coling"
@@ -145,3 +147,10 @@ for conference in "${conferences[@]}"; do
     fi
 done
 
+if [ -n "$update_papers_with_code" ]; then
+    mkdir -p data/papers_with_code
+    wget https://paperswithcode.com/media/about/papers-with-abstracts.json.gz -P data/papers_with_code
+    wget https://paperswithcode.com/media/about/links-between-papers-and-code.json.gz -P data/papers_with_code
+    gunzip data/papers_with_code/papers-with-abstracts.json.gz
+    gunzip data/papers_with_code/links-between-papers-and-code.json.gz
+fi
