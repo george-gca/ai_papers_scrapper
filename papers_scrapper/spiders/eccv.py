@@ -32,7 +32,7 @@ class EccvSpider(BaseSpider):
             f'Found {len(titles)} titles, {len(abstracts_links)} abstracts, and {len(pdfs_links)} pdfs'
 
         for title, abstract_link, pdf_link in zip(titles, abstracts_links, pdfs_links):
-            if abstract_link.split('/')[1] == f'{self.name}_{self.year}':
+            if abstract_link.split('/')[2] == f'{self.name}_{self.year}':
                 abstract_url = response.urljoin(abstract_link)
                 pdf_url = response.urljoin(pdf_link)
                 item = PdfFilesItem()
