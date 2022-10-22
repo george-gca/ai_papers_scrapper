@@ -30,6 +30,7 @@ conferences=(
     # "eacl 2021"
     # "eccv 2018"
     # "eccv 2020"
+    "eccv 2022"
     # "emnlp 2017"
     # "emnlp 2018"
     # "emnlp 2019"
@@ -98,7 +99,7 @@ conferences=(
     # "wacv 2022 no_subpage"
 )
 
-update_papers_with_code=1
+# update_papers_with_code=1
 
 acl_conferences=(
     "acl"
