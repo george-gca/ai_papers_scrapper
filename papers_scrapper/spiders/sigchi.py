@@ -16,10 +16,10 @@ class SIGCHISpider(BaseSpider):
         BaseSpider.__init__(self)
         self.year = year
         self.save_path = path.join('sigchi', year)
-        if int(year) < 2021:
-            self.start_urls = [f'https://st.sigchi.org/publications/toc/chi-{year}.html']
-        else:
-            self.start_urls = [f'https://chi{year}.acm.org/proceedings']
+        # if int(year) < 2021:
+        self.start_urls = [f'https://st.sigchi.org/publications/toc/chi-{year}.html']
+        # else:
+            # self.start_urls = [f'https://chi{year}.acm.org/proceedings']
 
     def start_requests(self):
         for url in self.start_urls:
@@ -28,6 +28,7 @@ class SIGCHISpider(BaseSpider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response: scrapy.http.TextResponse):
+        # inspect_response(response, self)
         links = response.xpath('//*[@id="DLcontent"]/h3/a')
         abstracts = response.xpath('//*[@id="DLcontent"]/div/div')
         authors_lines = response.xpath('//*[@id="DLcontent"]/ul')
@@ -37,6 +38,8 @@ class SIGCHISpider(BaseSpider):
             authors_lines.insert(578, 'Daniel McDuff, Ewa M. Nowara')
 
         assert len(links) == len(abstracts) == len(authors_lines), f'Found {len(links)} links, {len(abstracts)} abstracts, and {len(authors_lines)} authors lines'
+
+        self.logger.info(f'Found {len(links)} papers')
 
         for link, abstract, authors_line in zip(links, abstracts, authors_lines):
             abstract_link = link.xpath('@href').get()
