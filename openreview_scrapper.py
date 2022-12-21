@@ -1,115 +1,86 @@
 import argparse
-import os
-# from collections import defaultdict
-from functools import partial
-from dataclasses import dataclass
+from pathlib import Path
 
 import openreview
 import pandas as pd
 from tqdm import tqdm
 
 
-@dataclass(init=False)
-class ICLRConference:
-    decision_key: str
-    group_id: str
-    invitation_url: str
-
-    def __init__(self, year: str):
-        self.group_id = 'ICLR.cc'
-        if year == '2018':
-            self.invitation_url = f'{self.group_id}/{year}/Conference/-/Acceptance_Decision'
-            self.decision_key = 'decision'
-        elif year == '2019':
-            # Because of the way the Program Chairs chose to run ICLR '19, there are no "decision notes";
-            # instead, decisions are taken directly from Meta Reviews.
-            self.invitation_url = f'{self.group_id}/{year}/Conference/-/Paper.*/Meta_Review'
-            self.decision_key = 'recommendation'
-        elif year >= '2020':
-            self.invitation_url = f'{self.group_id}/{year}/Conference/Paper.*/-/Decision'
-            self.decision_key = 'decision'
-        else:
-            self.invitation_url = ''
-            self.decision_key = ''
-
-
-@dataclass(init=False)
-class NeurIPSWorkshop:
-    decision_key: str
-    group_id: str
-    invitation_url: str
-
-    def __init__(self, client: openreview.Client, year: str):
-        self.group_id = 'NeurIPS.cc'
-        invitations = openreview.tools.get_submission_invitations(client)
-        self.submission_urls = [c for c in invitations if c.startswith(f'{self.group_id}/{year}/Workshop/')]
-        self.invitation_urls = [c.replace('-/Blind_Submission', 'Paper.*/-/Decision') for c in self.submission_urls]
-        self.decision_key = 'decision'
-
-
-def download_conference_info(client: openreview.Client, conference: str, year: str, outdir: str = './', get_pdfs: bool = False):
+def download_conference_info(client: openreview.Client, conference: str, year: str, out_dir: str = './', get_pdfs: bool = False):
     '''
     Main function for downloading conference metadata (and optionally, PDFs)
     forum here means the paper id
     '''
-
     print('Getting metadata')
-    # get all submissions, reviews, and meta reviews, and organize them by forum ID
-    # (a unique identifier for each paper; as in "discussion forum")
+
     if conference == 'iclr':
-        conference_data = ICLRConference(year=year)
+        invitation_urls = [f'ICLR.cc/{year}/Conference/-/Blind_Submission']
 
-        submissions = openreview.tools.iterget_notes(
-            client, invitation=f'{conference_data.group_id}/{year}/Conference/-/Blind_Submission')
-        submissions_by_forum_id = {n.forum: n for n in submissions}
+        if year == '2019':
+            review_end = 'Meta_Review'
+            decision_key = 'recommendation'
 
-        # filter only accepted submissions' ids
-        decision_info = openreview.tools.iterget_notes(
-            client, invitation=conference_data.invitation_url)
-        accepted_submissions_ids = {
-            n.forum for n in decision_info if n.content[conference_data.decision_key] != 'Reject'}
+        else:
+            review_end = 'Decision'
+            decision_key = 'decision'
+
+
+    elif conference == 'iclr_workshop':
+        review_end = 'Decision'
+        decision_key = 'decision'
+
+        if year == '2018':
+            invitation_urls =  [f'{v}/-/Submission' for v in client.get_group(id='venues').members if f'ICLR.cc/{year}/Workshop' in v]
+
+        elif year == '2019':
+            invitation_urls =  [f'{v}/-/Blind_Submission' for v in client.get_group(id='venues').members if f'ICLR.cc/{year}/Workshop' in v]
+
+        else:
+            invitation_urls =  [f'{v}/-/Blind_Submission' for v in client.get_group(id='venues').members if f'ICLR.cc/{year}/Workshop' in v]
+
+
+    elif conference == 'neurips':
+        invitation_urls = [f'NeurIPS.cc/{year}/Conference/-/Blind_Submission']
+        review_end = 'Decision'
+        decision_key = 'decision'
 
     elif conference == 'neurips_workshop':
-        conference_data = NeurIPSWorkshop(client=client, year=year)
-        submissions_by_forum_id = {}
-        accepted_submissions_ids = set()
+        invitation_urls =  [f'{v}/-/Blind_Submission' for v in client.get_group(id='venues').members if f'NeurIPS.cc/{year}/Workshop' in v]
+        review_end = 'Decision'
+        decision_key = 'decision'
 
-        for submission_url, invitation_url in zip(conference_data.submission_urls, conference_data.invitation_urls):
-            submissions = openreview.tools.iterget_notes(client, invitation=submission_url)
-            submissions = {n.forum: n for n in submissions}
-            submissions_by_forum_id = {**submissions, **submissions_by_forum_id}
+    submissions = []
+    for invitation_url in invitation_urls:
+        print(f'Getting submissions for {invitation_url}')
+        new_submissions = client.get_all_notes(invitation=invitation_url, details='directReplies')
+        print(f'Found {len(new_submissions)} submissions')
+        submissions += new_submissions
 
-            # filter only accepted submissions' ids
-            decision_info = openreview.tools.iterget_notes(
-                client, invitation=invitation_url)
-            accepted_subs_ids = {
-                n.forum for n in decision_info if n.content[conference_data.decision_key] != 'Reject'}
-            accepted_submissions_ids = accepted_submissions_ids.union(accepted_subs_ids)
+    if len(submissions) == 0:
+        print(f'No submissions found for {conference} {year}')
+        return
 
-    # there should be 3 reviews per forum
-    # reviews = openreview.tools.iterget_notes(
-    #     client, invitation=f'{group_id}/{year}/Conference/-/Paper.*/Official_Review')
-    # reviews_by_forum_id = defaultdict(list)
-    # for review in reviews:
-    #     reviews_by_forum_id[review.forum].append(review)
+    if len(submissions[0].details["directReplies"]) > 0:
+        accepted_papers = {submission.forum: submission.content for submission in submissions for reply in submission.details["directReplies"] if reply["invitation"].endswith(review_end) and reply["content"][decision_key] != 'Reject'}
+    else:
+        accepted_papers = {submission.forum: submission.content for submission in submissions}
+
+    print(f'{len(accepted_papers)} accepted papers for {conference} {year}')
 
     # for every paper (forum), get the decision and the paper's content
     paper_info_df = pd.DataFrame(columns=['title', 'abstract_url', 'pdf_url'])
     abstracts_df = pd.DataFrame(columns=['title', 'abstract'])
-    accepted_submissions = {}
-    submissions_by_forum_id = {k: v for k, v in submissions_by_forum_id.items() if k in accepted_submissions_ids}
 
-    for forum_id in submissions_by_forum_id:
-        submission_content = submissions_by_forum_id[forum_id].content
-        title = submission_content['title'].strip()
-        abstract = submission_content['abstract']
+    for paper_id, paper_info in accepted_papers:
+        title = paper_info['title'].strip()
+        abstract = paper_info['abstract']
         abstract = abstract.strip()
         abstract = ' '.join(abstract.split())
 
         paper_info_df = paper_info_df.append(
             {'title': title,
-                'abstract_url': f'{forum_id}',
-                'pdf_url': f'{forum_id}'},
+                'abstract_url': f'{paper_id}',
+                'pdf_url': f'{paper_id}'},
             ignore_index=True)
 
         abstracts_df = abstracts_df.append(
@@ -117,52 +88,49 @@ def download_conference_info(client: openreview.Client, conference: str, year: s
                 'abstract': repr(abstract)},
             ignore_index=True)
 
-        accepted_submissions[forum_id] = submission_content['title']
-
     print('Writing tables to files')
-    save_dir = os.path.join(outdir, f'{conference}', f'{year}')
-    if not os.path.exists(save_dir):
+    save_dir = Path(out_dir) / f'{conference}' / f'{year}'
+    if not save_dir.exists():
         print(f'Creating folder {save_dir}')
-        os.makedirs(save_dir)
+        save_dir.mkdir(parents=True)
 
-    paper_info_df.to_csv(
-        os.path.join(save_dir, 'paper_info.csv'), sep=';', index=False)
+    paper_info_df.to_csv(save_dir / 'paper_info.csv', sep=';', index=False)
 
-    abstracts_df.to_csv(
-        os.path.join(save_dir, 'abstracts.csv'), sep='|', index=False)
+    abstracts_df.to_csv(save_dir / 'abstracts.csv', sep='|', index=False)
 
     # if requested, download pdfs to a subdirectory.
     if get_pdfs:
-        pdf_outdir = os.path.join(save_dir, 'papers')
-        if not os.path.exists(pdf_outdir):
-            print(f'Creating folder {pdf_outdir}')
-            os.makedirs(pdf_outdir)
+        pdf_out_dir = save_dir / 'papers'
+        if not pdf_out_dir.exists():
+            print(f'Creating folder {pdf_out_dir}')
+            pdf_out_dir.mkdir(parents=True)
 
         print('Downloading pdf files')
-        pbar = tqdm(accepted_submissions.items(), unit='pdf')
-        for k, v in pbar:
-            filename = f'{k}.pdf'
+        pbar = tqdm(accepted_papers.items(), unit='pdf')
+        for paper_id, paper_info in pbar:
+            filename = f'{paper_id}.pdf'
             pbar.set_description(filename)
-            pdf_outfile = os.path.join(pdf_outdir, filename)
-            if not os.path.exists(pdf_outfile):
+            pdf_outfile = pdf_out_dir / filename
+
+            if not pdf_outfile.exists():
                 try:
-                    pdf_binary = client.get_pdf(k)
-                    with open(pdf_outfile, 'wb') as file_handle:
-                        file_handle.write(pdf_binary)
+                    pdf_binary = client.get_pdf(paper_id)
+                    pdf_outfile.write_bytes(pdf_binary)
+
                 except:
                     print(
-                        f'Error while trying to get pdf for {k}: {v}\n'
-                        f'at https://openreview.net/pdf?id={k}')
+                        f'Error while trying to get pdf for {paper_id}: {paper_info["title"].strip()}\n'
+                        f'at https://openreview.net/pdf?id={paper_id}')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--baseurl', default='https://api.openreview.net')
     parser.add_argument('-c', '--conference', type=str, required=True,
-                        choices=('iclr', 'neurips_workshop'),
+                        choices=('iclr', 'neurips', 'neurips_workshop'),
                         help='conference to scrape data')
-    parser.add_argument('-d', '--download_pdfs', default=False,
-                        action='store_true', help='if included, download pdfs')
+    parser.add_argument('-d', '--download_pdfs', action='store_true',
+                        help='if included, download pdfs')
     parser.add_argument('-l', '--log_level', type=str, default='warning',
                         choices=('debug', 'info', 'warning',
                                  'error', 'critical', 'print'),

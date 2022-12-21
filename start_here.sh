@@ -75,14 +75,16 @@ conferences=(
     # "neurips 2019"
     # "neurips 2020"
     # "neurips 2021"
+    "neurips 2022"
     # "neurips_workshop 2019"
     # "neurips_workshop 2020"
     # "neurips_workshop 2021"
+    "neurips_workshop 2022"
     # "sigchi 2018"
     # "sigchi 2019"
     # "sigchi 2020"
     # "sigchi 2021"
-    "sigchi 2022"
+    # "sigchi 2022"
     # "sigdial 2017"
     # "sigdial 2018"
     # "sigdial 2019"
@@ -139,7 +141,7 @@ for conference in "${conferences[@]}"; do
         else
             $run_command scrapy crawl thecvf -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
         fi
-    elif [[ ${conf_year[0]} == "iclr" ]] || [[ ${conf_year[0]} == "neurips_workshop" ]]; then
+    elif [[ ${conf_year[0]} == "iclr" ]] || [[ ${conf_year[0]} == "neurips_workshop" ]] || [[ ${conf_year[0]} == "neurips" ]] && [[ ${conf_year[1]} == "2022" ]]; then
         $run_command python openreview_scrapper.py -c ${conf_year[0]} -y ${conf_year[1]} -d
     elif [[ ${conf_year[0]} == "icml" ]]; then
         $run_command scrapy crawl mlr_press -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
