@@ -79,7 +79,7 @@ conferences=(
     # "neurips_workshop 2019"
     # "neurips_workshop 2020"
     # "neurips_workshop 2021"
-    "neurips_workshop 2022"
+    # "neurips_workshop 2022"
     # "sigchi 2018"
     # "sigchi 2019"
     # "sigchi 2020"

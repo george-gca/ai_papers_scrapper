@@ -71,7 +71,7 @@ def download_conference_info(client: openreview.Client, conference: str, year: s
     paper_info_df = pd.DataFrame(columns=['title', 'abstract_url', 'pdf_url'])
     abstracts_df = pd.DataFrame(columns=['title', 'abstract'])
 
-    for paper_id, paper_info in accepted_papers:
+    for paper_id, paper_info in accepted_papers.items():
         title = paper_info['title'].strip()
         abstract = paper_info['abstract']
         abstract = abstract.strip()
