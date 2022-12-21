@@ -13,10 +13,7 @@ class MLRPressSpider(BaseSpider):
     start_urls = ['http://proceedings.mlr.press/']
 
     def __init__(self, conference: str = '', year: str = ''):
-        BaseSpider.__init__(self)
-        self.conference = conference
-        self.year = year
-        self.save_path = path.join(conference.lower(), year)
+        BaseSpider.__init__(self, conference, year)
 
     def start_requests(self):
         for url in self.start_urls:

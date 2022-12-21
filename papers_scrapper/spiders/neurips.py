@@ -13,9 +13,7 @@ class NeuripsSpider(BaseSpider):
     start_urls = ['https://papers.nips.cc/paper/', 'https://datasets-benchmarks-proceedings.neurips.cc/paper/']
 
     def __init__(self,  year: str = ''):
-        BaseSpider.__init__(self)
-        self.year = year
-        self.save_path = path.join('neurips', year)
+        BaseSpider.__init__(self, 'neurips', year)
 
     def start_requests(self):
         for url in self.start_urls:

@@ -13,9 +13,7 @@ class EccvSpider(BaseSpider):
     start_urls = ['https://www.ecva.net/papers.php']
 
     def __init__(self,  year: str = ''):
-        BaseSpider.__init__(self)
-        self.year = year
-        self.save_path = path.join('eccv', year)
+        BaseSpider.__init__(self, 'eccv', year)
 
     def start_requests(self):
         for url in self.start_urls:

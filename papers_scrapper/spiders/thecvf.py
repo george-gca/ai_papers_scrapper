@@ -16,10 +16,7 @@ class TheCVFSpider(BaseSpider):
     start_urls = ['https://openaccess.thecvf.com/']
 
     def __init__(self, conference: str='', year: str='', subpage: bool=True):
-        BaseSpider.__init__(self)
-        self.conference = conference
-        self.year = year
-        self.save_path = path.join(conference.lower(), year)
+        BaseSpider.__init__(self, conference, year)
         self.subpage = subpage
         if isinstance(subpage, str):
             subpage = subpage.lower()

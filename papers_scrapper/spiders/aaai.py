@@ -13,10 +13,8 @@ class AAAISpider(BaseSpider):
     start_urls = ['https://aaai.org/Library/AAAI/']
 
     def __init__(self, conference: str = '', year: str = '', new_style: bool = True, subpage: bool = True):
-        BaseSpider.__init__(self)
-        self.conference = conference
-        self.year = year
-        self.save_path = path.join(conference.lower(), year)
+        BaseSpider.__init__(self, conference, year)
+
         self.new_style = new_style
         if isinstance(new_style, str):
             new_style = new_style.lower()

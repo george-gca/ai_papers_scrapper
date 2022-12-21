@@ -16,10 +16,7 @@ class ACLSpider(BaseSpider):
     start_urls = ['https://aclanthology.org/']
 
     def __init__(self, conference: str='', year: str=''):
-        BaseSpider.__init__(self)
-        self.conference = conference
-        self.year = year
-        self.save_path = path.join(conference.lower(), year)
+        BaseSpider.__init__(self, conference, year)
 
     def start_requests(self):
         #TODO verify why it is not calling parse automatically

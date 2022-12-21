@@ -22,7 +22,7 @@ _logger = logging.getLogger(__name__)
 class PdfFilesPipeline(FilesPipeline):
     def file_path(self, request: scrapy.http.Request, response: scrapy.http.Response = None, info: scrapy.pipelines.media.MediaPipeline.SpiderInfo = None, *, item=None):
         file_name = request.url.split("/")[-1]
-        return str(Path(info.spider.save_path) / 'papers' / file_name)
+        return str(info.spider.save_path / 'papers' / file_name)
 
 
 class CsvExportPipeline:

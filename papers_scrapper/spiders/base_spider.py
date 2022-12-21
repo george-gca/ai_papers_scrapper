@@ -1,11 +1,11 @@
 import re
-from os import path
+from pathlib import Path
 
 from scrapy.spiders import CrawlSpider
 
 
 class BaseSpider(CrawlSpider):
-    def __init__(self):
+    def __init__(self, conference: str, year: str):
         html_regex = [
             '<b>',
             '<strong>',
@@ -31,6 +31,10 @@ class BaseSpider(CrawlSpider):
 
         self._html_regex = re.compile('|'.join(html_regex))
         self._special_chars_regex = re.compile('[\s]*<(/)?[\w\s_\-\−\–=\"]+(/)?>[\s]*')
+
+        self.conference = conference
+        self.year = year
+        self.save_path = Path(conference.lower()) / year
 
     def clean_html_tags(self, text: str) -> str:
         # remove html tags

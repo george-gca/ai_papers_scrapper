@@ -13,9 +13,7 @@ class SIGCHISpider(BaseSpider):
     # start_urls = ['https://st.sigchi.org/publications/toc/chi-2020.html', 'https://st.sigchi.org/publications/toc/chi-2020-ea.html']
 
     def __init__(self, year: str = ''):
-        BaseSpider.__init__(self)
-        self.year = year
-        self.save_path = path.join('sigchi', year)
+        BaseSpider.__init__(self, 'sigchi', year)
         # if int(year) < 2021:
         self.start_urls = [f'https://st.sigchi.org/publications/toc/chi-{year}.html']
         # else:

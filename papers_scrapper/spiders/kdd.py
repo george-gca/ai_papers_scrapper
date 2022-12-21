@@ -13,9 +13,7 @@ class KDDSpider(BaseSpider):
     start_urls = ['https://kdd.org/']
 
     def __init__(self, year: str = ''):
-        BaseSpider.__init__(self)
-        self.year = year
-        self.save_path = path.join('kdd', year)
+        BaseSpider.__init__(self, 'kdd', year)
 
     def start_requests(self):
         for url in self.start_urls:

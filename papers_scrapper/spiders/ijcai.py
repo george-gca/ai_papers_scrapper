@@ -17,9 +17,7 @@ class IJCAISpider(BaseSpider):
     start_urls = ['https://www.ijcai.org/']
 
     def __init__(self, year: str=''):
-        BaseSpider.__init__(self)
-        self.year = year
-        self.save_path = path.join('ijcai', year)
+        BaseSpider.__init__(self, 'ijcai', year)
 
     def start_requests(self):
         #TODO verify why it is not calling parse automatically
