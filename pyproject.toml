@@ -10,6 +10,9 @@ packages = [{include = "ai_papers_scrapper"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 scrapy = "^2.6.3"
+openreview-py = "^1.15.1"
+pandas = "^1.5.2"
+tqdm = "^4.64.1"
 
 
 [build-system]
