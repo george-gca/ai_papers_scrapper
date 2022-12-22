@@ -77,16 +77,14 @@ def download_conference_info(client: openreview.Client, conference: str, year: s
         abstract = abstract.strip()
         abstract = ' '.join(abstract.split())
 
-        paper_info_df = paper_info_df.append(
-            {'title': title,
-                'abstract_url': f'{paper_id}',
-                'pdf_url': f'{paper_id}'},
-            ignore_index=True)
+        paper_info_df = pd.concat([paper_info_df, pd.Series({'title': title,
+                                                             'abstract_url': f'{paper_id}',
+                                                             'pdf_url': f'{paper_id}'}).to_frame().T],
+                                  ignore_index=True)
 
-        abstracts_df = abstracts_df.append(
-            {'title': title,
-                'abstract': repr(abstract)},
-            ignore_index=True)
+        abstracts_df = pd.concat([abstracts_df, pd.Series({'title': title,
+                                                           'abstract': repr(abstract)}).to_frame().T],
+                                 ignore_index=True)
 
     print('Writing tables to files')
     save_dir = Path(out_dir) / f'{conference}' / f'{year}'
