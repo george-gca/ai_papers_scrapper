@@ -75,7 +75,7 @@ conferences=(
     # "neurips 2019"
     # "neurips 2020"
     # "neurips 2021"
-    "neurips 2022"
+    # "neurips 2022"
     # "neurips_workshop 2019"
     # "neurips_workshop 2020"
     # "neurips_workshop 2021"
@@ -99,6 +99,7 @@ conferences=(
     # "wacv 2020 no_subpage"
     # "wacv 2021 no_subpage"
     # "wacv 2022 no_subpage"
+    "wacv 2023 no_subpage"
 )
 
 # update_papers_with_code=1
