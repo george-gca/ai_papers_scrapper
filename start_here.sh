@@ -26,6 +26,7 @@ conferences=(
     # "cvpr 2020"
     # "cvpr 2021"
     # "cvpr 2022"
+    "cvpr 2023"
     # "eacl 2017"
     # "eacl 2021"
     # "eccv 2018"
@@ -99,10 +100,10 @@ conferences=(
     # "wacv 2020 no_subpage"
     # "wacv 2021 no_subpage"
     # "wacv 2022 no_subpage"
-    "wacv 2023 no_subpage"
+    # "wacv 2023 no_subpage"
 )
 
-# update_papers_with_code=1
+update_papers_with_code=1
 
 acl_conferences=(
     "acl"
