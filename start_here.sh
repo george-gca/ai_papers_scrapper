@@ -161,6 +161,6 @@ if [ -n "$update_papers_with_code" ]; then
     mkdir -p data/papers_with_code
     wget https://paperswithcode.com/media/about/papers-with-abstracts.json.gz -P data/papers_with_code
     wget https://paperswithcode.com/media/about/links-between-papers-and-code.json.gz -P data/papers_with_code
-    gunzip data/papers_with_code/papers-with-abstracts.json.gz
-    gunzip data/papers_with_code/links-between-papers-and-code.json.gz
+    gunzip -f data/papers_with_code/papers-with-abstracts.json.gz
+    gunzip -f data/papers_with_code/links-between-papers-and-code.json.gz
 fi
