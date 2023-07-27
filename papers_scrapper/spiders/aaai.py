@@ -28,6 +28,7 @@ class AAAISpider(BaseSpider):
         for link in response.xpath('//a[@href]'):
             link_str = link.xpath('@href').get()
             if self.regex.search(link_str) is not None:
+                self.logger.info(f'Scraping {link_str}')
                 yield scrapy.Request(
                     url=link_str,
                     callback=self.parse_proceedings,
