@@ -70,9 +70,11 @@ def download_conference_info(client: openreview.Client, conference: str, year: s
     # for every paper (forum), get the decision and the paper's content
     paper_info_df = pd.DataFrame(columns=['title', 'abstract_url', 'pdf_url'])
     abstracts_df = pd.DataFrame(columns=['title', 'abstract'])
+    authors_df = pd.DataFrame(columns=['title', 'authors'])
 
     for paper_id, paper_info in accepted_papers.items():
         title = paper_info['title'].strip()
+        authors = ', '.join(paper_info['authors'])
         abstract = paper_info['abstract']
         abstract = abstract.strip()
         abstract = ' '.join(abstract.split())
@@ -86,6 +88,10 @@ def download_conference_info(client: openreview.Client, conference: str, year: s
                                                            'abstract': repr(abstract)}).to_frame().T],
                                  ignore_index=True)
 
+        authors_df = pd.concat([authors_df, pd.Series({'title': title,
+                                                       'authors': authors}).to_frame().T],
+                                 ignore_index=True)
+
     print('Writing tables to files')
     save_dir = Path(out_dir) / f'{conference}' / f'{year}'
     if not save_dir.exists():
@@ -93,8 +99,8 @@ def download_conference_info(client: openreview.Client, conference: str, year: s
         save_dir.mkdir(parents=True)
 
     paper_info_df.to_csv(save_dir / 'paper_info.csv', sep=';', index=False)
-
     abstracts_df.to_csv(save_dir / 'abstracts.csv', sep='|', index=False)
+    authors_df.to_csv(save_dir / 'authors.csv', sep='|', index=False)
 
     # if requested, download pdfs to a subdirectory.
     if get_pdfs:
