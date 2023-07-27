@@ -64,3 +64,11 @@ To call `start_here.sh` inside the container, run:
 ```bash
 make run
 ```
+
+### Running interactive scrapy shell
+
+To run the interactive scrapy shell inside a Docker container, run:
+
+```bash
+make RUN_STRING="scrapy shell 'https://your.site.com'" run
+```
