@@ -100,7 +100,7 @@ def download_conference_info(client: openreview.Client, conference: str, year: s
 
     paper_info_df.to_csv(save_dir / 'paper_info.csv', sep=';', index=False)
     abstracts_df.to_csv(save_dir / 'abstracts.csv', sep='|', index=False)
-    authors_df.to_csv(save_dir / 'authors.csv', sep='|', index=False)
+    authors_df.to_csv(save_dir / 'authors.csv', sep=';', index=False)
 
     # if requested, download pdfs to a subdirectory.
     if get_pdfs:
