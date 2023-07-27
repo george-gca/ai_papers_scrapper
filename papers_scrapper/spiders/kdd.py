@@ -37,7 +37,7 @@ class KDDSpider(BaseSpider):
             xpath_str = '/html/body/main/div[2]/section/div/div[1]/div/div/ul/li/div/span[1]/a'
             replace_in_url = f'https://www.kdd.org/kdd{self.year}/accepted-papers/view/'
 
-        if self.year != '2021':
+        if self.year < '2021':
             for link in response.xpath(xpath_str):
                 title = link.xpath('text()').get()
                 title = self.clean_html_tags(title)
