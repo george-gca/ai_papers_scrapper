@@ -17,9 +17,12 @@ class KDDSpider(BaseSpider):
 
     def start_requests(self):
         for url in self.start_urls:
-            conference_url = f'{url}kdd{self.year}/accepted-papers/toc'
-            self.logger.info(
-                f'Start scraping {conference_url} for {self.year}')
+            if self.year != '2022':
+                conference_url = f'{url}kdd{self.year}/accepted-papers/toc'
+            else:
+                conference_url = f'{url}kdd{self.year}/toc.html'
+
+            self.logger.info(f'Start scraping {conference_url} for {self.year}')
             yield scrapy.Request(url=conference_url, callback=self.parse)
 
     def parse(self, response: scrapy.http.TextResponse):
