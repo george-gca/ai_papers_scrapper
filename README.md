@@ -22,13 +22,13 @@ Currently supports the following conferences, from 2017 and on:
 | [AAAI Library](https://www.aaai.org/Library/AAAI/aaai-library.php) | AAAI |
 | [ACL Anthology](https://aclanthology.org/) | ACL, COLING (even years), EACL (odd years, except 2019), EMNLP, Findings (2020 and on), IJCNLP (odd years), NAACL (except 2017 and 2020), SIGDIAL, TACL |
 | [European Computer Vision Association](https://www.ecva.net/papers.php) | ECCV (even years) |
-| [International Joint Conferences on Artificial Intelligence Organization](www.ijcai.org/) | IJCAI |
+| [International Joint Conferences on Artificial Intelligence Organization](https://www.ijcai.org/) | IJCAI |
 | [KDD](https://kdd.org/) | SIGKDD (abstracts only) |
-| [Proceedings of Machine Learning Research](http://proceedings.mlr.press/) | ICML |
+| [Proceedings of Machine Learning Research](https://proceedings.mlr.press/) | ICML |
 | [NeurIPS Proceedings](https://proceedings.neurips.cc/) | NeurIPS |
 | [NeurIPS Datasets and Benchmarks Proceedings](https://datasets-benchmarks-proceedings.neurips.cc/) | NeurIPS Track on Datasets and Benchmarks (2021) |
 | [OpenReview](https://openreview-py.readthedocs.io/en/latest/) | ICLR |
-| [SIGCHI](https://st.sigchi.org/) | SIGCHI (2018 and on, abstracts only) |
+| [SIGCHI](https://sigchi.org/) | SIGCHI (2018 and on, abstracts only) |
 | [ The Computer Vision Foundation open access](https://openaccess.thecvf.com/) | CVPR, ICCV (odd years), WACV (2020 and on) |
 
 ## Requirements
