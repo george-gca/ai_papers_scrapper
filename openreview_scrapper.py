@@ -110,21 +110,21 @@ def download_conference_info(client: openreview.Client, conference: str, year: s
             pdf_out_dir.mkdir(parents=True)
 
         print('Downloading pdf files')
-        pbar = tqdm(accepted_papers.items(), unit='pdf')
-        for paper_id, paper_info in pbar:
-            filename = f'{paper_id}.pdf'
-            pbar.set_description(filename)
-            pdf_outfile = pdf_out_dir / filename
+        with tqdm(accepted_papers.items(), unit='pdf') as pbar:
+            for paper_id, paper_info in pbar:
+                filename = f'{paper_id}.pdf'
+                pbar.set_description(filename)
+                pdf_outfile = pdf_out_dir / filename
 
-            if not pdf_outfile.exists():
-                try:
-                    pdf_binary = client.get_pdf(paper_id)
-                    pdf_outfile.write_bytes(pdf_binary)
+                if not pdf_outfile.exists():
+                    try:
+                        pdf_binary = client.get_pdf(paper_id)
+                        pdf_outfile.write_bytes(pdf_binary)
 
-                except:
-                    print(
-                        f'Error while trying to get pdf for {paper_id}: {paper_info["title"].strip()}\n'
-                        f'at https://openreview.net/pdf?id={paper_id}')
+                    except:
+                        print(
+                            f'Error while trying to get pdf for {paper_id}: {paper_info["title"].strip()}\n'
+                            f'at https://openreview.net/pdf?id={paper_id}')
 
 
 if __name__ == '__main__':
