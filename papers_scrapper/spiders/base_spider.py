@@ -46,3 +46,8 @@ class BaseSpider(CrawlSpider):
         text = ' '.join(text).strip()
         text = [t for t in text.split() if len(t.strip()) > 0]
         return ' '.join(text).strip()
+
+    def clean_quotes(self, text: str) -> str:
+        while (text.startswith('"') and text.endswith('"')) or (text.startswith("'") and text.endswith("'")):
+            text = text[1:-1].strip()
+        return text

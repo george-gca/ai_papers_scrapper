@@ -1,5 +1,3 @@
-from os import path
-
 import scrapy
 # from scrapy.shell import inspect_response
 
@@ -47,13 +45,13 @@ class SIGCHISpider(BaseSpider):
             abstract_text = ' '.join(abstract_text)
             abstract_text = self.clean_html_tags(abstract_text)
             abstract_text = self.clean_extra_whitespaces(abstract_text)
+            abstract_text = self.clean_quotes(abstract_text)
 
             title = link.xpath('text()').getall()
             title = ' '.join(title)
             title = self.clean_html_tags(title)
             title = self.clean_extra_whitespaces(title)
-            while (title.startswith('"') and title.endswith('"')) or (title.startswith("'") and title.endswith("'")):
-                title = title[1:-1].strip()
+            title = self.clean_quotes(title)
 
             if not isinstance(authors_line, str):
                 authors = authors_line.xpath('li/text()').getall()

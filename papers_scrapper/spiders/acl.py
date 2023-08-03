@@ -1,5 +1,3 @@
-from os import path
-
 import scrapy
 # from scrapy.shell import inspect_response
 
@@ -51,7 +49,7 @@ class ACLSpider(BaseSpider):
 
     def parse_subpage(self, response: scrapy.http.TextResponse):
         # inspect_response(response, self)
-        links = response.xpath(f'//*[@id="main"]/div[2]/p/span[2]/strong/a')
+        links = response.xpath('//*[@id="main"]/div[2]/p/span[2]/strong/a')
         for link in links:
             title = link.xpath('.//text()').getall()
             title = ''.join(title).strip()
@@ -59,7 +57,9 @@ class ACLSpider(BaseSpider):
                 title = title[1:-1].strip()
 
             lower_title = title.strip().lower()
-            if not lower_title.startswith('proceedings of ') and not lower_title.startswith('transactions of ') and not lower_title.startswith('findings of '):
+            if not lower_title.startswith('proceedings of ') and not lower_title.startswith('transactions of ') \
+                and not lower_title.startswith('findings of '):
+
                 abstract_link = link.xpath('@href').get()
                 abstract_url = response.urljoin(abstract_link)
                 item = PdfFilesItem()
@@ -90,9 +90,9 @@ class ACLSpider(BaseSpider):
         item['pdf_url'] = file_url.replace('https://aclanthology.org/', '')
 
         abstract = response.xpath('//*[@id="main"]/div[1]/div[1]/div/div/text()').get()
-        if abstract == None:
+        if abstract is None:
             abstract = response.xpath('//*[@id="main"]/div[2]/div[1]/div/div/span').get()
-            if abstract == None:
+            if abstract is None:
                 self.logger.warning(f'No abstract found for "{item["title"]}": {item["abstract_url"]}')
                 return
 
@@ -114,13 +114,11 @@ class ACLSpider(BaseSpider):
 
         abstract = self.clean_html_tags(abstract)
         abstract = self.clean_extra_whitespaces(abstract)
-        while (abstract.startswith('"') and abstract.endswith('"')) or (abstract.startswith("'") and abstract.endswith("'")):
-            abstract = abstract[1:-1].strip()
+        abstract = self.clean_quotes(abstract)
 
         item['title'] = self.clean_html_tags(item['title'])
         item['title'] = self.clean_extra_whitespaces(item['title'])
-        while (item['title'].startswith('"') and item['title'].endswith('"')) or (item['title'].startswith("'") and item['title'].endswith("'")):
-            item['title'] = item['title'][1:-1].strip()
+        item['title'] = self.clean_quotes(item['title'])
 
         authors = response.xpath('//*[@id="main"]/div[1]/p/a/text()').getall()
         item['authors'] = ', '.join(authors).strip()

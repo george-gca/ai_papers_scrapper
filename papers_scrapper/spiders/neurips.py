@@ -1,5 +1,3 @@
-from os import path
-
 import scrapy
 # from scrapy.shell import inspect_response
 
@@ -51,7 +49,7 @@ class NeuripsSpider(BaseSpider):
 
         # it is div[2] when looking in chrome, but div[1] in here, don't know why
         title = response.xpath('/html/body/div[1]/div/h4[1]/text()').get()
-        if title == None:
+        if title is None:
             self.logger.warning(
                 f'No title found in {abstract_url}')
             return
@@ -77,7 +75,7 @@ class NeuripsSpider(BaseSpider):
         if not abstract:
             abstract = response.xpath('/html/body/div[1]/div/pre/code/text()').get()
 
-        if abstract == None:
+        if abstract is None:
             self.logger.warning(
                 f'No abstract found for "{title}": {abstract_url}')
             return
@@ -113,8 +111,7 @@ class NeuripsSpider(BaseSpider):
 
         abstract = self.clean_html_tags(abstract)
         abstract = self.clean_extra_whitespaces(abstract)
-        while (abstract.startswith('"') and abstract.endswith('"')) or (abstract.startswith("'") and abstract.endswith("'")):
-            abstract = abstract[1:-1].strip()
+        abstract = self.clean_quotes(abstract)
 
         file_url = response.urljoin(pdf_link)
         self.logger.debug(f'Found pdf url for {title}: {file_url}')
@@ -132,6 +129,5 @@ class NeuripsSpider(BaseSpider):
         item['title'] = title
         item['title'] = self.clean_html_tags(item['title'])
         item['title'] = self.clean_extra_whitespaces(item['title'])
-        while (item['title'].startswith('"') and item['title'].endswith('"')) or (item['title'].startswith("'") and item['title'].endswith("'")):
-            item['title'] = item['title'][1:-1].strip()
+        item['title'] = self.clean_quotes(item['title'])
         yield item

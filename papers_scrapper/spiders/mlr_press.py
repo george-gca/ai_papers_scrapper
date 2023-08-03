@@ -1,5 +1,3 @@
-from os import path
-
 import scrapy
 # from scrapy.shell import inspect_response
 
@@ -71,7 +69,7 @@ class MLRPressSpider(BaseSpider):
         item = response.meta['item']
 
         abstract = response.xpath('//*[@id="abstract"]/text()').get()
-        if abstract == None:
+        if abstract is None:
             self.logger.warning(
                 f'No abstract found for: {item["abstract_url"]}')
             return
@@ -95,8 +93,7 @@ class MLRPressSpider(BaseSpider):
 
         abstract = self.clean_html_tags(abstract)
         abstract = self.clean_extra_whitespaces(abstract)
-        while (abstract.startswith('"') and abstract.endswith('"')) or (abstract.startswith("'") and abstract.endswith("'")):
-            abstract = abstract[1:-1].strip()
+        abstract = self.clean_quotes(abstract)
 
         self.logger.debug(f'Abstract text: {abstract}')
         # might contain \r in abstract text, like \rightarrow
@@ -105,8 +102,7 @@ class MLRPressSpider(BaseSpider):
         item['title'] = response.xpath('/html/body/main/div/article/h1/text()').get()
         item['title'] = self.clean_html_tags(item['title'])
         item['title'] = self.clean_extra_whitespaces(item['title'])
-        while (item['title'].startswith('"') and item['title'].endswith('"')) or (item['title'].startswith("'") and item['title'].endswith("'")):
-            item['title'] = item['title'][1:-1].strip()
+        item['title'] = self.clean_quotes(item['title'])
 
         item['authors'] = response.xpath('/html/body/main/div/article/span/text()').get().strip()
         item['authors'] = item['authors'].replace('\xa0', ' ').strip()

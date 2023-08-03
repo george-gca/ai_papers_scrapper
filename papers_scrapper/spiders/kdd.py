@@ -1,5 +1,3 @@
-from os import path
-
 import scrapy
 # from scrapy.shell import inspect_response
 
@@ -63,7 +61,8 @@ class KDDSpider(BaseSpider):
             links = response.xpath('//*[@id="DLcontent"]/h3/a')
             abstracts = response.xpath('//*[@id="DLcontent"]/div/div')
             authors_lines = response.xpath('//*[@id="DLcontent"]/ul')
-            assert len(links) == len(abstracts) == len(authors_lines), f'Found {len(links)} links, {len(abstracts)} abstracts, and {len(authors_lines)} authors lines'
+            assert len(links) == len(abstracts) == len(authors_lines), \
+                f'Found {len(links)} links, {len(abstracts)} abstracts, and {len(authors_lines)} authors lines'
 
             for link, abstract, authors_line in zip(links, abstracts, authors_lines):
                 abstract_link = link.xpath('@href').get()
@@ -72,13 +71,13 @@ class KDDSpider(BaseSpider):
                 abstract_text = ' '.join(abstract_text)
                 abstract_text = self.clean_html_tags(abstract_text)
                 abstract_text = self.clean_extra_whitespaces(abstract_text)
+                abstract_text = self.clean_quotes(abstract_text)
 
                 title = link.xpath('text()').getall()
                 title = ' '.join(title)
                 title = self.clean_html_tags(title)
                 title = self.clean_extra_whitespaces(title)
-                while (title.startswith('"') and title.endswith('"')) or (title.startswith("'") and title.endswith("'")):
-                    title = title[1:-1].strip()
+                title = self.clean_quotes(title)
 
                 authors = authors_line.xpath('li/text()').getall()
                 authors = ', '.join(authors)

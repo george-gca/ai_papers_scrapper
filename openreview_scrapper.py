@@ -6,7 +6,13 @@ import pandas as pd
 from tqdm import tqdm
 
 
-def download_conference_info(client: openreview.Client, conference: str, year: str, out_dir: str = './', get_pdfs: bool = False):
+def download_conference_info(
+        client: openreview.Client,
+        conference: str,
+        year: str,
+        out_dir: str = './',
+        get_pdfs: bool = False,
+        ):
     '''
     Main function for downloading conference metadata (and optionally, PDFs)
     forum here means the paper id
@@ -30,13 +36,16 @@ def download_conference_info(client: openreview.Client, conference: str, year: s
         decision_key = 'decision'
 
         if year == '2018':
-            invitation_urls =  [f'{v}/-/Submission' for v in client.get_group(id='venues').members if f'ICLR.cc/{year}/Workshop' in v]
+            invitation_urls =  [f'{v}/-/Submission' for v in client.get_group(id='venues').members
+                                if f'ICLR.cc/{year}/Workshop' in v]
 
         elif year == '2019':
-            invitation_urls =  [f'{v}/-/Blind_Submission' for v in client.get_group(id='venues').members if f'ICLR.cc/{year}/Workshop' in v]
+            invitation_urls =  [f'{v}/-/Blind_Submission' for v in client.get_group(id='venues').members
+                                if f'ICLR.cc/{year}/Workshop' in v]
 
         else:
-            invitation_urls =  [f'{v}/-/Blind_Submission' for v in client.get_group(id='venues').members if f'ICLR.cc/{year}/Workshop' in v]
+            invitation_urls =  [f'{v}/-/Blind_Submission' for v in client.get_group(id='venues').members
+                                if f'ICLR.cc/{year}/Workshop' in v]
 
 
     elif conference == 'neurips':
@@ -45,7 +54,8 @@ def download_conference_info(client: openreview.Client, conference: str, year: s
         decision_key = 'decision'
 
     elif conference == 'neurips_workshop':
-        invitation_urls =  [f'{v}/-/Blind_Submission' for v in client.get_group(id='venues').members if f'NeurIPS.cc/{year}/Workshop' in v]
+        invitation_urls =  [f'{v}/-/Blind_Submission' for v in client.get_group(id='venues').members
+                            if f'NeurIPS.cc/{year}/Workshop' in v]
         review_end = 'Decision'
         decision_key = 'decision'
 
@@ -61,7 +71,9 @@ def download_conference_info(client: openreview.Client, conference: str, year: s
         return
 
     if len(submissions[0].details["directReplies"]) > 0:
-        accepted_papers = {submission.forum: submission.content for submission in submissions for reply in submission.details["directReplies"] if reply["invitation"].endswith(review_end) and reply["content"][decision_key] != 'Reject'}
+        accepted_papers = {submission.forum: submission.content for submission in submissions
+                           for reply in submission.details["directReplies"]
+                           if reply["invitation"].endswith(review_end) and reply["content"][decision_key] != 'Reject'}
     else:
         accepted_papers = {submission.forum: submission.content for submission in submissions}
 

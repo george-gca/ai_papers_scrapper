@@ -20,7 +20,14 @@ _logger = logging.getLogger(__name__)
 
 
 class PdfFilesPipeline(FilesPipeline):
-    def file_path(self, request: scrapy.http.Request, response: scrapy.http.Response = None, info: scrapy.pipelines.media.MediaPipeline.SpiderInfo = None, *, item=None):
+    def file_path(
+            self,
+            request: scrapy.http.Request,
+            response: scrapy.http.Response = None,
+            info: scrapy.pipelines.media.MediaPipeline.SpiderInfo = None,
+            *,
+            item=None,
+            ):
         file_name = request.url.split("/")[-1]
         return str(info.spider.save_path / 'papers' / file_name)
 
@@ -54,7 +61,16 @@ class CsvExportPipeline:
         return item
 
 
-PaperInfoCsvExportPipeline = partial(CsvExportPipeline, file_name='paper_info.csv', fields=['title', 'abstract_url', 'pdf_url'])
-PaperAbstractCsvExportPipeline = partial(CsvExportPipeline, file_name='abstracts.csv', fields=['title', 'abstract'], delimiter='|')
-PaperAuthorsCsvExportPipeline = partial(CsvExportPipeline, file_name='authors.csv', fields=['title', 'authors'])
+PaperInfoCsvExportPipeline = partial(CsvExportPipeline,
+    file_name='paper_info.csv',
+    fields=['title', 'abstract_url', 'pdf_url'],
+    )
+PaperAbstractCsvExportPipeline = partial(CsvExportPipeline,
+    file_name='abstracts.csv',
+    fields=['title', 'abstract'], delimiter='|',
+    )
+PaperAuthorsCsvExportPipeline = partial(CsvExportPipeline,
+    file_name='authors.csv',
+    fields=['title', 'authors'],
+    )
 

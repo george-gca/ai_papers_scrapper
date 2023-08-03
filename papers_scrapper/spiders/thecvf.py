@@ -1,5 +1,3 @@
-from os import path
-
 import scrapy
 # from scrapy.shell import inspect_response
 
@@ -86,7 +84,7 @@ class TheCVFSpider(BaseSpider):
         item = response.meta['item']
 
         abstract = response.xpath('//*[@id="abstract"]/text()').get()
-        if abstract == None:
+        if abstract is None:
             self.logger.warning(f'No abstract found for "{item["title"]}": {item["abstract_url"]}')
             return
 
@@ -108,13 +106,11 @@ class TheCVFSpider(BaseSpider):
 
         abstract = self.clean_html_tags(abstract)
         abstract = self.clean_extra_whitespaces(abstract)
-        while (abstract.startswith('"') and abstract.endswith('"')) or (abstract.startswith("'") and abstract.endswith("'")):
-            abstract = abstract[1:-1].strip()
+        abstract = self.clean_quotes(abstract)
 
         item['title'] = self.clean_html_tags(item['title'])
         item['title'] = self.clean_extra_whitespaces(item['title'])
-        while (item['title'].startswith('"') and item['title'].endswith('"')) or (item['title'].startswith("'") and item['title'].endswith("'")):
-            item['title'] = item['title'][1:-1].strip()
+        item['title'] = self.clean_quotes(item['title'])
 
         item['authors'] = response.xpath('//*[@id="authors"]/b/i/text()').get()
         item['authors'] = item['authors'].strip()
