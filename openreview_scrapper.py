@@ -133,7 +133,7 @@ def download_conference_info(
                         pdf_binary = client.get_pdf(paper_id)
                         pdf_outfile.write_bytes(pdf_binary)
 
-                    except:
+                    except Exception:
                         print(
                             f'Error while trying to get pdf for {paper_id}: {paper_info["title"].strip()}\n'
                             f'at https://openreview.net/pdf?id={paper_id}')
