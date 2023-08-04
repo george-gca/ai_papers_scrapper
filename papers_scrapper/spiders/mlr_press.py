@@ -22,7 +22,7 @@ class MLRPressSpider(BaseSpider):
     def parse(self, response: scrapy.http.TextResponse):
         conference_names = response.xpath('/html/body/main/div/article/div/ul[3]/li/text()').getall()
         links = response.xpath('/html/body/main/div/article/div/ul[3]/li/a/@href').getall()
-        correct_link = [l for c, l in zip(conference_names, links) if self.conference.upper() in c and self.year in c]
+        correct_link = [link for c, link in zip(conference_names, links) if self.conference.upper() in c and self.year in c]
         if len(correct_link) == 0:
             self.logger.info(f'Could not find {self.conference} {self.year}')
             return
