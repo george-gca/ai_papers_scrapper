@@ -11,7 +11,7 @@ conferences=(
     # "aaai 2020"
     # "aaai 2021"
     # "aaai 2022"
-    "aaai 2023"
+    # "aaai 2023"
     # "acl 2017"
     # "acl 2018"
     # "acl 2019"
@@ -19,6 +19,7 @@ conferences=(
     # "acl 2021"
     # "acl 2022"
     # "acl 2023"
+    # coling happens on even years
     # "coling 2018"
     # "coling 2020"
     # "coling 2022"
@@ -32,6 +33,7 @@ conferences=(
     # "eacl 2017"
     # "eacl 2021"
     # "eacl 2023"
+    # eccv happens on even years
     # "eccv 2018"
     # "eccv 2020"
     # "eccv 2022"
@@ -41,10 +43,12 @@ conferences=(
     # "emnlp 2020"
     # "emnlp 2021"
     # "emnlp 2022"
+    # "emnlp 2023" # december
     # "findings 2020"
     # "findings 2021"
     # "findings 2022"
     # "findings 2023"
+    # iccv happens on odd years
     # "iccv 2017 no_subpage"
     # "iccv 2019"
     # "iccv 2021"
@@ -73,6 +77,7 @@ conferences=(
     # "ijcnlp 2019"
     # "ijcnlp 2021"
     # "ijcnlp 2022"
+    # "ijcnlp 2023" # waiting
     # "kdd 2017"
     # "kdd 2018"
     # "kdd 2020"
@@ -89,6 +94,7 @@ conferences=(
     # "neurips 2020"
     # "neurips 2021"
     # "neurips 2022"
+    # "neurips 2023" # december
     # "neurips_workshop 2019"
     # "neurips_workshop 2020"
     # "neurips_workshop 2021"
@@ -98,6 +104,7 @@ conferences=(
     # "sigchi 2020"
     # "sigchi 2021"
     # "sigchi 2022"
+    # "sigchi 2023" # TODO
     # "sigdial 2017"
     # "sigdial 2018"
     # "sigdial 2019"
