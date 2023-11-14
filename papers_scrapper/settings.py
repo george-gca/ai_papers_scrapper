@@ -54,7 +54,11 @@ COOKIES_ENABLED = False
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     'papers_scrapper.middlewares.PapersScrapperDownloaderMiddleware': 543,
+    # 'scrapy.downloadermiddlewares.DownloaderMiddleware': 543,
+    # 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware': 544,
 }
+
+MEDIA_ALLOW_REDIRECTS = True
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
