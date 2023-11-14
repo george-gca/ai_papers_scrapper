@@ -14,7 +14,6 @@ class AAAISpider(BaseSpider):
 
     def __init__(self, conference: str = '', year: str = '', new_style: bool = True, subpage: bool = True):
         BaseSpider.__init__(self, conference, year)
-        self.regex = re.compile(rf'{conference}-[\d]+-{year}')
 
     def start_requests(self):
         for url in self.start_urls:
@@ -24,29 +23,49 @@ class AAAISpider(BaseSpider):
     def parse(self, response: scrapy.http.TextResponse):
         # inspect_response(response, self)
         # https://aaai.org/proceeding/aaai-36-2022/
-        for link in response.xpath('//a[@href]'):
-            link_str = link.xpath('@href').get()
-            if self.regex.search(link_str) is not None:
-                self.logger.info(f'Scraping {link_str}')
+        for link in response.xpath('//*[@id="genesis-content"]/article/div/div[2]/div/div/div/div/div/div[2]/div/p/a'):
+            link_str = link.xpath('text()').get().strip()
+            if link_str == self.year:
+                link_url = link.xpath('@href').get()
+                self.logger.info(f'Scraping {link_url}')
                 yield scrapy.Request(
-                    url=link_str,
+                    url=link_url,
                     callback=self.parse_proceedings,
                     dont_filter=True,
                 )
+                break
 
     def parse_proceedings(self, response: scrapy.http.TextResponse):
         # inspect_response(response, self)
-        for link in response.xpath('//*[@id="genesis-content"]/ul/li/a/@href').getall():
-            yield scrapy.Request(
-                url=link,
-                callback=self.parse_papers,
-                dont_filter=True,
-            )
+        year = int(self.year)
+        if year <= 2022:
+            for link in response.xpath('//*[@id="genesis-content"]/ul/li/a/@href').getall():
+                yield scrapy.Request(
+                    url=link,
+                    callback=self.parse_papers,
+                    dont_filter=True,
+                )
+        else:
+            # new style
+            for link in response.xpath('/html/body/div/div[1]/div[1]/div/ul/li/div/h2/a'):
+                if f'aaai-{year - 2000}' in link.xpath('text()').get().strip().lower():
+                    yield scrapy.Request(
+                        url=link.xpath('@href').get(),
+                        callback=self.parse_papers,
+                        dont_filter=True,
+                    )
 
     def parse_papers(self, response: scrapy.http.TextResponse):
         # inspect_response(response, self)
-        links = response.xpath('//*[@id="genesis-content"]/div/ul/li/h5/a')
-        authors_line = response.xpath('//*[@id="genesis-content"]/div/ul/li/span/p[1]/text()').getall()
+        year = int(self.year)
+        if year <= 2022:
+            links = response.xpath('//*[@id="genesis-content"]/div/ul/li/h5/a')
+            authors_line = response.xpath('//*[@id="genesis-content"]/div/ul/li/span/p[1]/text()').getall()
+
+        else:
+            # new style
+            links = response.xpath('/html/body/div/div[1]/div[1]/div/div/div[2]/div/ul/li/div/h3/a')
+            authors_line = response.xpath('/html/body/div/div[1]/div[1]/div/div/div[2]/div/ul/li/div/div/div[1]/text()').getall()
 
         for link, authors in zip(links, authors_line):
             title = link.xpath('text()').get().strip()
@@ -66,9 +85,23 @@ class AAAISpider(BaseSpider):
             )
 
     def parse_abstract(self, response: scrapy.http.TextResponse):
+        year = int(self.year)
         item = response.meta['item']
-        abstract = response.xpath('//*[@id="genesis-content"]/article/div[2]/div[1]/div/p/text()').get()
-        file_url = response.xpath('//*[@id="genesis-content"]/article/div[1]/a[1]/@href').get()
+
+        if year <= 2022:
+            abstract = response.xpath('//*[@id="genesis-content"]/article/div[2]/div[1]/div/p/text()').get()
+            file_url = response.xpath('//*[@id="genesis-content"]/article/div[1]/a[1]/@href').get()
+        else:
+            abstract = response.xpath('/html/body/div/div[1]/div[1]/div/article/div/div[1]/section[4]/text()').getall()
+            if len(abstract) == 0:
+                return
+
+            abstract = abstract[-1]
+            if len(abstract) == 0:
+                # inspect_response(response, self)
+                return
+
+            file_url = response.xpath('/html/body/div/div[1]/div[1]/div/article/div/div[2]/div[2]/ul/li/a/@href').get()
 
         splitted_link = file_url.split('/')
         pdf_url = '/'.join(splitted_link[-2:])[:-4]

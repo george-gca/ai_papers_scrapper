@@ -11,6 +11,7 @@ conferences=(
     # "aaai 2020"
     # "aaai 2021"
     # "aaai 2022"
+    "aaai 2023"
     # "acl 2017"
     # "acl 2018"
     # "acl 2019"
@@ -47,6 +48,7 @@ conferences=(
     # "iccv 2017 no_subpage"
     # "iccv 2019"
     # "iccv 2021"
+    # "iccv 2023"
     # "iclr 2018"
     # "iclr 2019"
     # "iclr 2020"
@@ -76,7 +78,7 @@ conferences=(
     # "kdd 2020"
     # "kdd 2021"
     # "kdd 2022"
-    "kdd 2023" # TODO: check why the redirect is not working
+    # "kdd 2023" # TODO: check why the redirect is not working
     # "naacl 2018"
     # "naacl 2019"
     # "naacl 2021"
@@ -102,6 +104,7 @@ conferences=(
     # "sigdial 2020"
     # "sigdial 2021"
     # "sigdial 2022"
+    # "sigdial 2023"
     # "tacl 2017"
     # "tacl 2018"
     # "tacl 2019"
