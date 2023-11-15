@@ -29,6 +29,9 @@ class PdfFilesPipeline(FilesPipeline):
             item=None,
             ):
         file_name = request.url.split("/")[-1]
+        if not file_name.endswith('.pdf'):
+            file_name += '.pdf'
+
         return str(info.spider.save_path / 'papers' / file_name)
 
 
