@@ -83,7 +83,7 @@ conferences=(
     # "kdd 2020"
     # "kdd 2021"
     # "kdd 2022"
-    # "kdd 2023" # TODO: check why the redirect is not working
+    # "kdd 2023"
     # "naacl 2018"
     # "naacl 2019"
     # "naacl 2021"
