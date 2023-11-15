@@ -72,7 +72,10 @@ class AAAISpider(BaseSpider):
             abstract_link = link.xpath('@href').get()
 
             item = PdfFilesItem()
-            item['abstract_url'] = abstract_link.split('/')[-2]
+            if not abstract_link.endswith('/'):
+                item['abstract_url'] = abstract_link.split('/')[-1]
+            else:
+                item['abstract_url'] = abstract_link.split('/')[-2]
             item['title'] = title
             item['authors'] = authors.strip()
 
@@ -91,6 +94,8 @@ class AAAISpider(BaseSpider):
         if year <= 2022:
             abstract = response.xpath('//*[@id="genesis-content"]/article/div[2]/div[1]/div/p/text()').get()
             file_url = response.xpath('//*[@id="genesis-content"]/article/div[1]/a[1]/@href').get()
+            pdf_url = '/'.join(file_url.split('/')[-2:])[:-4]
+
         else:
             abstract = response.xpath('/html/body/div/div[1]/div[1]/div/article/div/div[1]/section[4]/text()').getall()
             if len(abstract) == 0:
@@ -102,9 +107,7 @@ class AAAISpider(BaseSpider):
                 return
 
             file_url = response.xpath('/html/body/div/div[1]/div[1]/div/article/div/div[2]/div[2]/ul/li/a/@href').get()
-
-        splitted_link = file_url.split('/')
-        pdf_url = '/'.join(splitted_link[-2:])[:-4]
+            pdf_url = '/'.join(file_url.split('/')[-2:])
 
         abstract = self.clean_html_tags(abstract)
         abstract = self.clean_extra_whitespaces(abstract)
