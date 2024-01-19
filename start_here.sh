@@ -43,7 +43,7 @@ conferences=(
     # "emnlp 2020"
     # "emnlp 2021"
     # "emnlp 2022"
-    "emnlp 2023"
+    # "emnlp 2023"
     # "findings 2020"
     # "findings 2021"
     # "findings 2022"
@@ -77,7 +77,6 @@ conferences=(
     # "ijcnlp 2019"
     # "ijcnlp 2021"
     # "ijcnlp 2022"
-    # "ijcnlp 2023" # waiting
     # "kdd 2017"
     # "kdd 2018"
     # "kdd 2020"
@@ -94,7 +93,7 @@ conferences=(
     # "neurips 2020"
     # "neurips 2021"
     # "neurips 2022"
-    # "neurips 2023" # december
+    "neurips 2023"
     # "neurips_workshop 2019"
     # "neurips_workshop 2020"
     # "neurips_workshop 2021"
@@ -123,6 +122,7 @@ conferences=(
     # "wacv 2021 no_subpage"
     # "wacv 2022 no_subpage"
     # "wacv 2023 no_subpage"
+    "wacv 2024 no_subpage"
 )
 
 # update_papers_with_code=1
@@ -165,7 +165,8 @@ for conference in "${conferences[@]}"; do
         else
             $run_command scrapy crawl thecvf -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
         fi
-    elif [[ ${conf_year[0]} == "iclr" ]] || [[ ${conf_year[0]} == "neurips_workshop" ]] || ([[ ${conf_year[0]} == "neurips" ]] && [[ ${conf_year[1]} == "2022" ]]); then
+    elif [[ ${conf_year[0]} == "iclr" ]] || [[ ${conf_year[0]} == "neurips_workshop" ]] || ([[ ${conf_year[0]} == "neurips" ]] && [[ ${conf_year[1]} == "2022" ]]) \
+        || ([[ ${conf_year[0]} == "neurips" ]] && [[ ${conf_year[1]} == "2023" ]]); then
         $run_command python openreview_scrapper.py -c ${conf_year[0]} -y ${conf_year[1]} -d
     elif [[ ${conf_year[0]} == "icml" ]]; then
         $run_command scrapy crawl mlr_press -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
