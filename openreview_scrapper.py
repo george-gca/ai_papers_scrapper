@@ -20,7 +20,7 @@ def download_conference_info(
     print('Getting metadata')
 
     if conference == 'neurips':
-        submissions = client.get_all_notes(content={f'venueid':'NeurIPS.cc/{year}/Conference'} )
+        submissions = client.get_all_notes(content={'venueid': f'NeurIPS.cc/{year}/Conference'} )
 
     # for every paper (forum), get the decision and the paper's content
     paper_info_df = pd.DataFrame(columns=['title', 'abstract_url', 'pdf_url'])
@@ -232,7 +232,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     year = int(args.year)
-    if year > 2023 or (year == 2023 and args.conference == 'meurips'):
+    if year > 2023 or (year == 2023 and args.conference == 'neurips'):
         client = openreview.Client(baseurl='https://api2.openreview.net', username=args.username, password=args.password)
         download_conference_info(client, args.conference, args.year, args.outdir, get_pdfs=args.download_pdfs)
     else:
