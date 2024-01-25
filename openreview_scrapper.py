@@ -80,7 +80,7 @@ def download_conference_info(
 
                     except Exception:
                         print(
-                            f'Error while trying to get pdf for {paper_id}: {paper_info["title"].strip()}\n'
+                            f'Error while trying to get pdf for {paper_id}: {paper_info.content["title"]["value"].strip()}\n'
                             f'at https://openreview.net/pdf?id={paper_id}')
 
 
