@@ -33,6 +33,7 @@ conferences=(
     # "eacl 2017"
     # "eacl 2021"
     # "eacl 2023"
+    "eacl 2024"
     # eccv happens on even years
     # "eccv 2018"
     # "eccv 2020"
@@ -48,6 +49,7 @@ conferences=(
     # "findings 2021"
     # "findings 2022"
     # "findings 2023"
+    "findings 2024"
     # iccv happens on odd years
     # "iccv 2017 no_subpage"
     # "iccv 2019"
@@ -93,7 +95,7 @@ conferences=(
     # "neurips 2020"
     # "neurips 2021"
     # "neurips 2022"
-    "neurips 2023"
+    # "neurips 2023"
     # "neurips_workshop 2019"
     # "neurips_workshop 2020"
     # "neurips_workshop 2021"
@@ -122,7 +124,7 @@ conferences=(
     # "wacv 2021 no_subpage"
     # "wacv 2022 no_subpage"
     # "wacv 2023 no_subpage"
-    "wacv 2024 no_subpage"
+    # "wacv 2024 no_subpage"
 )
 
 # update_papers_with_code=1
