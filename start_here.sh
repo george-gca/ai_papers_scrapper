@@ -12,6 +12,7 @@ conferences=(
     # "aaai 2021"
     # "aaai 2022"
     # "aaai 2023"
+    "aaai 2024"
     # "acl 2017"
     # "acl 2018"
     # "acl 2019"
@@ -33,7 +34,7 @@ conferences=(
     # "eacl 2017"
     # "eacl 2021"
     # "eacl 2023"
-    "eacl 2024"
+    # "eacl 2024"
     # eccv happens on even years
     # "eccv 2018"
     # "eccv 2020"
@@ -49,7 +50,7 @@ conferences=(
     # "findings 2021"
     # "findings 2022"
     # "findings 2023"
-    "findings 2024"
+    # "findings 2024"
     # iccv happens on odd years
     # "iccv 2017 no_subpage"
     # "iccv 2019"

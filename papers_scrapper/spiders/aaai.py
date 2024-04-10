@@ -25,7 +25,8 @@ class AAAISpider(BaseSpider):
         # https://aaai.org/proceeding/aaai-36-2022/
         for link in response.xpath('//*[@id="genesis-content"]/article/div/div[2]/div/div/div/div/div/div[2]/div/p/a'):
             link_str = link.xpath('text()').get().strip()
-            if link_str == self.year:
+            # fix for 2024 links, since 2023 links don't currently have their own links
+            if link_str == self.year or (self.year == '2024' and link_str == '2023'):
                 link_url = link.xpath('@href').get()
                 self.logger.info(f'Scraping {link_url}')
                 yield scrapy.Request(
@@ -49,8 +50,10 @@ class AAAISpider(BaseSpider):
             # new style
             for link in response.xpath('/html/body/div/div[1]/div[1]/div/ul/li/div/h2/a'):
                 if f'aaai-{year - 2000}' in link.xpath('text()').get().strip().lower():
+                    link_url = link.xpath('@href').get()
+                    self.logger.info(f'Scraping proceeding {link_url}')')
                     yield scrapy.Request(
-                        url=link.xpath('@href').get(),
+                        url=link_url,
                         callback=self.parse_papers,
                         dont_filter=True,
                     )
