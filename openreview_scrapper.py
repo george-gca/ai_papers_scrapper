@@ -21,6 +21,8 @@ def download_conference_info(
 
     if conference == 'neurips':
         submissions = client.get_all_notes(content={'venueid': f'NeurIPS.cc/{year}/Conference'} )
+    elif conference == 'iclr':
+        submissions = client.get_all_notes(content={'venueid': f'ICLR.cc/{year}/Conference'} )
 
     # for every paper (forum), get the decision and the paper's content
     paper_info_df = pd.DataFrame(columns=['title', 'abstract_url', 'pdf_url'])
