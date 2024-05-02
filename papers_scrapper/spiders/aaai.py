@@ -51,7 +51,7 @@ class AAAISpider(BaseSpider):
             for link in response.xpath('/html/body/div/div[1]/div[1]/div/ul/li/div/h2/a'):
                 if f'aaai-{year - 2000}' in link.xpath('text()').get().strip().lower():
                     link_url = link.xpath('@href').get()
-                    self.logger.info(f'Scraping proceeding {link_url}')')
+                    self.logger.info(f'Scraping proceeding {link_url}')
                     yield scrapy.Request(
                         url=link_url,
                         callback=self.parse_papers,
