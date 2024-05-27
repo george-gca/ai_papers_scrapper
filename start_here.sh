@@ -24,6 +24,7 @@ conferences=(
     # "coling 2018"
     # "coling 2020"
     # "coling 2022"
+    "coling 2024"
     # "cvpr 2017 no_subpage"
     # "cvpr 2018"
     # "cvpr 2019"
@@ -62,7 +63,7 @@ conferences=(
     # "iclr 2021"
     # "iclr 2022"
     # "iclr 2023"
-    "iclr 2024"
+    # "iclr 2024"
     # "icml 2017"
     # "icml 2018"
     # "icml 2019"
@@ -129,7 +130,7 @@ conferences=(
     # "wacv 2024 no_subpage"
 )
 
-# update_papers_with_code=1
+update_papers_with_code=1
 
 acl_conferences=(
     "acl"
