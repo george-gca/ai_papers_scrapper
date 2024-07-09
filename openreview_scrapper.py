@@ -20,9 +20,11 @@ def download_conference_info(
     print('Getting metadata')
 
     if conference == 'neurips':
-        submissions = client.get_all_notes(content={'venueid': f'NeurIPS.cc/{year}/Conference'} )
+        submissions = client.get_all_notes(content={'venueid': f'NeurIPS.cc/{year}/Conference'})
     elif conference == 'iclr':
-        submissions = client.get_all_notes(content={'venueid': f'ICLR.cc/{year}/Conference'} )
+        submissions = client.get_all_notes(content={'venueid': f'ICLR.cc/{year}/Conference'})
+    elif conference == 'icml':
+        submissions = client.get_all_notes(content={'venueid': f'ICML.cc/{year}/Conference'} )
 
     # for every paper (forum), get the decision and the paper's content
     paper_info_df = pd.DataFrame(columns=['title', 'abstract_url', 'pdf_url'])
@@ -222,7 +224,7 @@ def download_conference_info_old_api(
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--conference', type=str, required=True,
-                        choices=('iclr', 'neurips', 'neurips_workshop'), help='conference to scrape data')
+                        choices=('iclr', 'icml', 'neurips', 'neurips_workshop'), help='conference to scrape data')
     parser.add_argument('-d', '--download_pdfs', action='store_true', help='if included, download pdfs')
     parser.add_argument('-l', '--log_level', type=str, default='warning',
                         choices=('debug', 'info', 'warning', 'error', 'critical', 'print'),

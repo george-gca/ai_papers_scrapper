@@ -24,7 +24,7 @@ conferences=(
     # "coling 2018"
     # "coling 2020"
     # "coling 2022"
-    "coling 2024"
+    # "coling 2024"
     # "cvpr 2017 no_subpage"
     # "cvpr 2018"
     # "cvpr 2019"
@@ -71,6 +71,7 @@ conferences=(
     # "icml 2021"
     # "icml 2022"
     # "icml 2023"
+    # "icml 2024"
     # "ijcai 2017"
     # "ijcai 2018"
     # "ijcai 2019"
@@ -170,8 +171,11 @@ for conference in "${conferences[@]}"; do
         else
             $run_command scrapy crawl thecvf -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
         fi
-    elif [[ ${conf_year[0]} == "iclr" ]] || [[ ${conf_year[0]} == "neurips_workshop" ]] || ([[ ${conf_year[0]} == "neurips" ]] && [[ ${conf_year[1]} == "2022" ]]) \
-        || ([[ ${conf_year[0]} == "neurips" ]] && [[ ${conf_year[1]} == "2023" ]]); then
+    elif [[ ${conf_year[0]} == "iclr" ]] || \
+        ([[ ${conf_year[0]} == "icml" ]] && [[ ${conf_year[1]} == "2024" ]]) || \
+        [[ ${conf_year[0]} == "neurips_workshop" ]] || \
+        ([[ ${conf_year[0]} == "neurips" ]] && [[ ${conf_year[1]} == "2022" ]]) || \
+        ([[ ${conf_year[0]} == "neurips" ]] && [[ ${conf_year[1]} == "2023" ]]); then
         $run_command python openreview_scrapper.py -c ${conf_year[0]} -y ${conf_year[1]} -d
     elif [[ ${conf_year[0]} == "icml" ]]; then
         $run_command scrapy crawl mlr_press -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
