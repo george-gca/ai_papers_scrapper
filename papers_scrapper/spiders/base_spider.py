@@ -42,10 +42,8 @@ class BaseSpider(CrawlSpider):
         return self._special_chars_regex.sub(' ', text).strip()
 
     def clean_extra_whitespaces(self, text: str) -> str:
-        text = [t for t in text.split('\n') if len(t.strip()) > 0]
-        text = ' '.join(text).strip()
-        text = [t for t in text.split() if len(t.strip()) > 0]
-        return ' '.join(text).strip()
+        text = ' '.join(t for t in text.split('\n') if len(t.strip()) > 0).strip()
+        return ' '.join(t for t in text.split() if len(t.strip()) > 0).strip()
 
     def clean_quotes(self, text: str) -> str:
         while (text.startswith('"') and text.endswith('"')) or (text.startswith("'") and text.endswith("'")):
