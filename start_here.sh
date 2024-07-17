@@ -93,6 +93,7 @@ conferences=(
     # "naacl 2019"
     # "naacl 2021"
     # "naacl 2022"
+    "naacl 2024"
     # "neurips 2017"
     # "neurips 2018"
     # "neurips 2019"
@@ -124,6 +125,7 @@ conferences=(
     # "tacl 2021"
     # "tacl 2022"
     # "tacl 2023"
+    "tacl 2024"
     # "wacv 2020 no_subpage"
     # "wacv 2021 no_subpage"
     # "wacv 2022 no_subpage"
@@ -131,7 +133,7 @@ conferences=(
     # "wacv 2024 no_subpage"
 )
 
-update_papers_with_code=1
+# update_papers_with_code=1
 
 acl_conferences=(
     "acl"
