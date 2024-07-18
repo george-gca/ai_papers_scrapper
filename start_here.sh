@@ -100,10 +100,6 @@ conferences=(
     # "neurips 2021"
     # "neurips 2022"
     # "neurips 2023"
-    # "neurips_workshop 2019"
-    # "neurips_workshop 2020"
-    # "neurips_workshop 2021"
-    # "neurips_workshop 2022"
     # "sigchi 2018"
     # "sigchi 2019"
     # "sigchi 2020"
@@ -131,7 +127,7 @@ conferences=(
     # "wacv 2024 no_subpage"
 )
 
-update_papers_with_code=1
+# update_papers_with_code=1
 
 acl_conferences=(
     "acl"
@@ -171,17 +167,22 @@ for conference in "${conferences[@]}"; do
         else
             $run_command scrapy crawl thecvf -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
         fi
-    elif [[ ${conf_year[0]} == "iclr" ]] || \
-        ([[ ${conf_year[0]} == "icml" ]] && [[ ${conf_year[1]} == "2024" ]]) || \
-        [[ ${conf_year[0]} == "neurips_workshop" ]] || \
-        ([[ ${conf_year[0]} == "neurips" ]] && [[ ${conf_year[1]} == "2022" ]]) || \
-        ([[ ${conf_year[0]} == "neurips" ]] && [[ ${conf_year[1]} == "2023" ]]); then
-        $run_command python openreview_scrapper.py -c ${conf_year[0]} -y ${conf_year[1]} -d
     elif [[ ${conf_year[0]} == "icml" ]]; then
         $run_command scrapy crawl mlr_press -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
     else # eccv, ijcai, or neurips
         $run_command scrapy crawl ${conf_year[0]} -s LOG_LEVEL=INFO -a year=${conf_year[1]}
     fi
+
+    case "${conf_year[0]}" in
+        aaai|acl|coling|eacl|eccv|emnlp|iclr|icml|ijcai|ijcnlp|kdd|naacl|neurips|sigchi|sigdial ) is_openreview_conference=1;;
+        *) is_openreview_conference=0;;
+    esac
+
+    if [ $is_openreview_conference -eq 1 ]; then
+        echo ""
+        $run_command python openreview_scrapper.py -c ${conf_year[0]} -y ${conf_year[1]} -w # -d
+    fi
+
 done
 
 if [ -n "$update_papers_with_code" ]; then
