@@ -13,6 +13,7 @@ scrapy = "^2.6.3"
 openreview-py = "^1.15.1"
 pandas = "^1.5.2"
 tqdm = "^4.64.1"
+numpy = "<2"
 
 
 [build-system]
