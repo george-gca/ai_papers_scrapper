@@ -79,3 +79,16 @@ To run the interactive scrapy shell inside a Docker container, run:
 ```bash
 make RUN_STRING="scrapy shell 'https://your.site.com'" run
 ```
+
+Source URL:
+-1 - auto detect
+0 - openreview
+1 - aaai
+2 - acl
+3 - eccv
+4 - ijcai
+5 - kdd
+6 - icml
+7 - neurips
+8 - sigchi
+9 - cvf

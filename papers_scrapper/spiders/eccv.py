@@ -87,4 +87,5 @@ class EccvSpider(BaseSpider):
         self.logger.debug(f'Abstract text: {abstract}')
         # might contain \r in abstract text, like \rightarrow
         item['abstract'] = repr(abstract)
+        item['source_url'] = 3
         yield item

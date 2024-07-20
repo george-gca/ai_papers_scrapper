@@ -120,4 +120,5 @@ class KDDSpider(BaseSpider):
 
         item['abstract'] = repr(abstract)
         item['authors'] = authors.strip()
+        item['source_url'] = 5
         yield item

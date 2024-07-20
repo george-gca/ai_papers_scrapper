@@ -65,4 +65,5 @@ class SIGCHISpider(BaseSpider):
             item['authors'] = authors.strip()
             item['abstract'] = repr(abstract_text)
             item['title'] = title
+            item['source_url'] = 8
             yield item

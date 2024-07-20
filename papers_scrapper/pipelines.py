@@ -66,7 +66,7 @@ class CsvExportPipeline:
 
 PaperInfoCsvExportPipeline = partial(CsvExportPipeline,
     file_name='paper_info.csv',
-    fields=['title', 'abstract_url', 'pdf_url'],
+    fields=['title', 'abstract_url', 'pdf_url', 'source_url'],
     )
 PaperAbstractCsvExportPipeline = partial(CsvExportPipeline,
     file_name='abstracts.csv',

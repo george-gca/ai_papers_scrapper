@@ -106,5 +106,6 @@ class MLRPressSpider(BaseSpider):
 
         item['authors'] = response.xpath('/html/body/main/div/article/span/text()').get().strip()
         item['authors'] = item['authors'].replace('\xa0', ' ').strip()
+        item['source_url'] = 6
 
         yield item

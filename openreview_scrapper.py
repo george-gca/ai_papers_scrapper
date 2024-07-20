@@ -46,7 +46,7 @@ def _save_and_download_papers(
         client: None | Client | OpenReviewClient = None,
         ) -> None:
     # save papers to csv files, and download pdfs if requested
-    paper_info_df = pd.DataFrame(columns=['title', 'abstract_url', 'pdf_url'])
+    paper_info_df = pd.DataFrame(columns=['title', 'abstract_url', 'pdf_url', 'source_url'])
     abstracts_df = pd.DataFrame(columns=['title', 'abstract'])
     authors_df = pd.DataFrame(columns=['title', 'authors'])
 
@@ -58,7 +58,8 @@ def _save_and_download_papers(
 
         paper_info_df = pd.concat([paper_info_df, pd.Series({'title': title,
                                                              'abstract_url': f'{paper_id}',
-                                                             'pdf_url': f'{paper_id}'}).to_frame().T],
+                                                             'pdf_url': f'{paper_id}',
+                                                             'source_url': 0}).to_frame().T],
                                   ignore_index=True)
 
         abstracts_df = pd.concat([abstracts_df, pd.Series({'title': title,
