@@ -124,12 +124,12 @@ def _save_and_download_papers(
                         pdf_binary = client.get_pdf(paper_id)
                         pdf_outfile.write_bytes(pdf_binary)
 
-                    except Exception:
-                        print(f'Error while trying to get pdf for {paper_id}: {paper_info["title"]}\n'
+                    except:
+                        tqdm.write(f'Error while trying to get pdf for {paper_id}: {paper_info["title"]}\n'
                               f'at https://openreview.net/pdf?id={paper_id}')
 
                     # add random sleep between api calls
-                    sleep(uniform(0.5, 1.))
+                    sleep(uniform(1., 2.))
 
 
 def _download_conference_info(
@@ -155,7 +155,12 @@ def _download_conference_info(
     submissions = []
     for url, blind_url in zip(submissions_urls, blind_submissions_urls):
         # test which string returns the correct submissions
-        new_submissions = client.get_all_notes(invitation=url, details='directReplies')
+        try:
+            new_submissions = client.get_all_notes(invitation=url, details='directReplies')
+            sleep(uniform(1., 2.))
+        except:
+            print(f'Error while trying to get papers submissions for {conference} {year}')
+            continue
 
         if len(new_submissions) > 0:
             submissions += new_submissions
@@ -266,7 +271,7 @@ if __name__ == '__main__':
     if args.include_workshops:
         print('Getting openreview metadata for workshops')
         # add random sleep between api calls
-        sleep(uniform(0.5, 1.))
+        sleep(uniform(1., 2.))
         workshop_papers_infos = _download_conference_info(client, args.conference, args.year, main_conference=False)
 
         if len(workshop_papers_infos) == 0:
