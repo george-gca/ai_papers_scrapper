@@ -180,7 +180,7 @@ for conference in "${conferences[@]}"; do
 
     if [ $is_openreview_conference -eq 1 ]; then
         echo ""
-        $run_command python openreview_scrapper.py -c ${conf_year[0]} -y ${conf_year[1]} -w # -d
+        $run_command python openreview_scrapper.py -c ${conf_year[0]} -y ${conf_year[1]} -w -d
     fi
 
 done
