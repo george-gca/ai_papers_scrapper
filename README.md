@@ -79,3 +79,22 @@ To run the interactive scrapy shell inside a Docker container, run:
 ```bash
 make RUN_STRING="scrapy shell 'https://your.site.com'" run
 ```
+
+## Information about `source_url`
+
+Since some conferences have multiple sources, I created a `source_url` field to help when recreating the urls in [AI Papers Searcher](https://github.com/george-gca/ai_papers_searcher). The variable is an integer that represents the source URL. The following table shows the available sources:
+
+| source_url | Source      |
+| ---------- | ----------- |
+| -1         | auto detect |
+| 0          | openreview  |
+| 1          | aaai        |
+| 2          | acl         |
+| 3          | eccv        |
+| 4          | ijcai       |
+| 5          | kdd         |
+| 6          | icml        |
+| 7          | neurips     |
+| 8          | sigchi      |
+| 9          | cvf         |
+| 10         | arxiv       |

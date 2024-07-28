@@ -85,5 +85,6 @@ class IJCAISpider(BaseSpider):
         # might contain \r in abstract text, like \rightarrow
         item['abstract'] = repr(abstract)
         item['authors'] = response.xpath('//*[@id="block-system-main"]/div/div/div[1]/div[1]/h2/text()').get().strip()
+        item['source_url'] = 4
 
         yield item

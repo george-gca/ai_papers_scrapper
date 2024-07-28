@@ -43,6 +43,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         pip \
         wheel && \
     $PIP_INSTALL \
+        "numpy<2" \
         openreview-py \
         pandas \
         scrapy \

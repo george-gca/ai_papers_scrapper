@@ -1,47 +1,65 @@
 import argparse
 from pathlib import Path
+from random import uniform
+from time import sleep
+from typing import Any
 
-import openreview
+from openreview import Client
+from openreview.api import OpenReviewClient
 import pandas as pd
 from tqdm import tqdm
 
 
-def download_conference_info(
-        client: openreview.Client,
+# got from `client.get_group(id='venues').members`
+VENUES_NAMES = {
+    'aaai': 'AAAI.org',
+    'acl': 'aclweb.org/ACL',
+    'coling': 'COLING.org',
+    # 'cvpr': 'thecvf.com/CVPR',
+    'eacl': 'eacl.org/EACL',
+    'eccv': 'thecvf.com/ECCV',
+    'emnlp': 'EMNLP',
+    # 'iccv': 'thecvf.com/ICCV',
+    'iclr': 'ICLR.cc',
+    'icml': 'ICML.cc',
+    'ijcai': 'ijcai.org/IJCAI',
+    'ijcnlp': 'aclweb.org/AACL-IJCNLP',
+    'kdd': 'KDD.org',
+    'naacl': 'aclweb.org/NAACL',
+    'neurips': 'NeurIPS.cc',
+    'sigchi': 'acm.org/CHI',
+    'sigdial': 'SIGDIAL.org',
+    # 'wacv': 'thecvf.com/WACV',
+}
+
+DECISION_KEYS = (
+    ('Decision', 'decision'),
+    ('Meta_Review', 'recommendation'),
+)
+
+def _save_and_download_papers(
+        papers_infos: list[dict[str, Any]],
         conference: str,
         year: str,
         out_dir: str = './',
         get_pdfs: bool = False,
+        client: None | Client | OpenReviewClient = None,
         ) -> None:
-    '''
-    Main function for downloading conference metadata (and optionally, PDFs)
-    forum here means the paper id
-    '''
-    print('Getting metadata')
-
-    if conference == 'neurips':
-        submissions = client.get_all_notes(content={'venueid': f'NeurIPS.cc/{year}/Conference'})
-    elif conference == 'iclr':
-        submissions = client.get_all_notes(content={'venueid': f'ICLR.cc/{year}/Conference'})
-    elif conference == 'icml':
-        submissions = client.get_all_notes(content={'venueid': f'ICML.cc/{year}/Conference'} )
-
-    # for every paper (forum), get the decision and the paper's content
-    paper_info_df = pd.DataFrame(columns=['title', 'abstract_url', 'pdf_url'])
+    # save papers to csv files, and download pdfs if requested
+    paper_info_df = pd.DataFrame(columns=['title', 'abstract_url', 'pdf_url', 'source_url'])
     abstracts_df = pd.DataFrame(columns=['title', 'abstract'])
     authors_df = pd.DataFrame(columns=['title', 'authors'])
 
-    for paper_info in submissions:
-        paper_id = paper_info.id
-        title = paper_info.content['title']['value'].strip()
-        authors = ', '.join(paper_info.content['authors']['value'])
-        abstract = paper_info.content['abstract']['value']
-        abstract = abstract.strip()
-        abstract = ' '.join(abstract.split())
+    for paper_info in papers_infos:
+        abstract = paper_info['abstract']
+        authors = paper_info['authors']
+        paper_id = paper_info['paper_id']
+        title = paper_info['title']
 
         paper_info_df = pd.concat([paper_info_df, pd.Series({'title': title,
                                                              'abstract_url': f'{paper_id}',
-                                                             'pdf_url': f'{paper_id}'}).to_frame().T],
+                                                             'pdf_url': f'{paper_id}',
+                                                             'source_url': 0}).to_frame().T],
                                   ignore_index=True)
 
         abstracts_df = pd.concat([abstracts_df, pd.Series({'title': title,
@@ -52,11 +70,31 @@ def download_conference_info(
                                                        'authors': authors}).to_frame().T],
                                  ignore_index=True)
 
-    print('Writing tables to files')
+    print('\tWriting tables to files')
     save_dir = Path(out_dir) / f'{conference}' / f'{year}'
     if not save_dir.exists():
-        print(f'Creating folder {save_dir}')
+        print(f'\tCreating folder {save_dir}')
         save_dir.mkdir(parents=True)
+
+    # if there are papers already, append to them
+    if (save_dir / 'paper_info.csv').exists():
+        paper_info_df = pd.concat([pd.read_csv(save_dir / 'paper_info.csv', sep=';'), paper_info_df], ignore_index=True)
+        abstracts_df = pd.concat([pd.read_csv(save_dir / 'abstracts.csv', sep='|'), abstracts_df], ignore_index=True)
+        authors_df = pd.concat([pd.read_csv(save_dir / 'authors.csv', sep=';'), authors_df], ignore_index=True)
+
+        # remove duplicates
+        previous_len = len(paper_info_df)
+        paper_info_df.drop_duplicates(subset=['title'], inplace=True)
+        abstracts_df.drop_duplicates(subset=['title'], inplace=True)
+        authors_df.drop_duplicates(subset=['title'], inplace=True)
+
+        if len(paper_info_df) != previous_len:
+            print(f'\tFound {previous_len - len(paper_info_df)} duplicates')
+
+        if len(paper_info_df) != len(abstracts_df) or len(paper_info_df) != len(authors_df):
+            print(f'\tError: different number of papers in tables: {len(paper_info_df)}, {len(abstracts_df)}, {len(authors_df)}')
+            print(f'\tNo values were written for {conference} {year}')
+            return
 
     paper_info_df.to_csv(save_dir / 'paper_info.csv', sep=';', index=False)
     abstracts_df.to_csv(save_dir / 'abstracts.csv', sep='|', index=False)
@@ -64,15 +102,19 @@ def download_conference_info(
 
     # if requested, download pdfs to a subdirectory.
     if get_pdfs:
+        if client is None:
+            print('Cannot download pdfs without a client')
+            return
+
         pdf_out_dir = save_dir / 'papers'
         if not pdf_out_dir.exists():
-            print(f'Creating folder {pdf_out_dir}')
+            print(f'\tCreating folder {pdf_out_dir}')
             pdf_out_dir.mkdir(parents=True)
 
         print('Downloading pdf files')
-        with tqdm(submissions, unit='pdf') as pbar:
+        with tqdm(papers_infos, unit='pdf') as pbar:
             for paper_info in pbar:
-                paper_id = paper_info.id
+                paper_id = paper_info['paper_id']
                 filename = f'{paper_id}.pdf'
                 pbar.set_description(filename)
                 pdf_outfile = pdf_out_dir / filename
@@ -82,163 +124,163 @@ def download_conference_info(
                         pdf_binary = client.get_pdf(paper_id)
                         pdf_outfile.write_bytes(pdf_binary)
 
-                    except Exception:
-                        print(
-                            f'Error while trying to get pdf for {paper_id}: {paper_info.content["title"]["value"].strip()}\n'
-                            f'at https://openreview.net/pdf?id={paper_id}')
+                    except:
+                        tqdm.write(f'Error while trying to get pdf for {paper_id}: {paper_info["title"]}\n'
+                              f'at https://openreview.net/pdf?id={paper_id}')
+
+                    # add random sleep between api calls
+                    sleep(uniform(1., 2.))
 
 
-def download_conference_info_old_api(
-        client: openreview.Client,
+def _download_conference_info(
+        client: Client | OpenReviewClient,
         conference: str,
         year: str,
-        out_dir: str = './',
-        get_pdfs: bool = False,
-        ) -> None:
+        main_conference: bool = True,
+        ) -> list[dict[str, Any]]:
     '''
-    Main function for downloading conference metadata (and optionally, PDFs)
+    Main function for downloading conference metadata
     forum here means the paper id
     '''
-    print('Getting metadata')
+    venues = _get_all_venues(client)
 
-    if conference == 'iclr':
-        invitation_urls = [f'ICLR.cc/{year}/Conference/-/Blind_Submission']
+    if main_conference:
+        submissions_urls = [f'{v}/-/Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/Conference' in v]
+        blind_submissions_urls = [f'{v}/-/Blind_Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/Conference' in v]
 
-        if year == '2019':
-            review_end = 'Meta_Review'
-            decision_key = 'recommendation'
-
-        else:
-            review_end = 'Decision'
-            decision_key = 'decision'
-
-
-    elif conference == 'iclr_workshop':
-        review_end = 'Decision'
-        decision_key = 'decision'
-
-        if year == '2018':
-            invitation_urls =  [f'{v}/-/Submission' for v in client.get_group(id='venues').members
-                                if f'ICLR.cc/{year}/Workshop' in v]
-
-        elif year == '2019':
-            invitation_urls =  [f'{v}/-/Blind_Submission' for v in client.get_group(id='venues').members
-                                if f'ICLR.cc/{year}/Workshop' in v]
-
-        else:
-            invitation_urls =  [f'{v}/-/Blind_Submission' for v in client.get_group(id='venues').members
-                                if f'ICLR.cc/{year}/Workshop' in v]
-
-    elif conference == 'neurips':
-        invitation_urls = [f'NeurIPS.cc/{year}/Conference/-/Blind_Submission']
-        review_end = 'Decision'
-        decision_key = 'decision'
-
-    elif conference == 'neurips_workshop':
-        invitation_urls =  [f'{v}/-/Blind_Submission' for v in client.get_group(id='venues').members
-                            if f'NeurIPS.cc/{year}/Workshop' in v]
-        review_end = 'Decision'
-        decision_key = 'decision'
+    else:
+        submissions_urls = [f'{v}/-/Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/Workshop' in v]
+        blind_submissions_urls = [f'{v}/-/Blind_Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/Workshop' in v]
 
     submissions = []
-    for invitation_url in invitation_urls:
-        print(f'Getting submissions for {invitation_url}')
-        # submissions = client.get_all_notes(content={'venueid': invitation_url}, details='directReplies')
-        new_submissions = client.get_all_notes(invitation=invitation_url, details='directReplies')
-        print(f'Found {len(new_submissions)} submissions')
-        submissions += new_submissions
+    for url, blind_url in zip(submissions_urls, blind_submissions_urls):
+        # test which string returns the correct submissions
+        try:
+            new_submissions = client.get_all_notes(invitation=url, details='directReplies')
+            sleep(uniform(1., 2.))
+        except:
+            print(f'Error while trying to get papers submissions for {conference} {year}')
+            continue
+
+        if len(new_submissions) > 0:
+            submissions += new_submissions
+            continue
+
+        new_submissions = client.get_all_notes(invitation=blind_url, details='directReplies')
+        if len(new_submissions) > 0:
+            submissions += new_submissions
 
     if len(submissions) == 0:
-        print(f'No submissions found for {conference} {year}')
-        return
+        # print(f'\tNo submissions found for {conference} {year}')
+        return []
 
-    if len(submissions[0].details["directReplies"]) > 0:
-        accepted_papers = {submission.forum: submission.content for submission in submissions
-                           for reply in submission.details["directReplies"]
-                           if reply["invitation"].endswith(review_end) and reply["content"][decision_key] != 'Reject'}
-    else:
-        accepted_papers = {submission.forum: submission.content for submission in submissions}
+    for review_end, decision_key in DECISION_KEYS:
+        if len(submissions[0].details["directReplies"]) > 0:
+            if 'invitation' in submissions[0].details["directReplies"][0]:
+                accepted_papers = {submission.forum: submission.content for submission in submissions
+                            for reply in submission.details["directReplies"]
+                            if reply["invitation"].endswith(review_end) and reply["content"][decision_key] != 'Reject'}
 
-    print(f'{len(accepted_papers)} accepted papers for {conference} {year}')
+            elif 'invitations' in submissions[0].details["directReplies"][0]:
+                accepted_papers = {submission.forum: submission.content for submission in submissions
+                                for reply in submission.details["directReplies"]
+                                for invitation in reply["invitations"]
+                                if invitation.endswith(review_end) and reply["content"][decision_key]["value"] != 'Reject'}
+            else:
+                accepted_papers = {}
 
-    # for every paper (forum), get the decision and the paper's content
-    paper_info_df = pd.DataFrame(columns=['title', 'abstract_url', 'pdf_url'])
-    abstracts_df = pd.DataFrame(columns=['title', 'abstract'])
-    authors_df = pd.DataFrame(columns=['title', 'authors'])
+        else:
+            accepted_papers = {submission.forum: submission.content for submission in submissions}
 
+        if len(accepted_papers) > 0:
+            # we don't need to check the other decision key
+            break
+
+    if len(accepted_papers) == 0:
+        # print(f'\tNo accepted papers found for {conference} {year}')
+        return []
+
+    print(f'\t{len(accepted_papers)} papers found for {conference} {year}')
+
+    papers_infos = []
     for paper_id, paper_info in accepted_papers.items():
-        title = paper_info['title'].strip()
-        authors = ', '.join(paper_info['authors'])
-        abstract = paper_info['abstract']
-        abstract = abstract.strip()
+        if 'authors' not in paper_info:
+            continue
+
+        if isinstance(paper_info['abstract'], dict):
+            abstract = paper_info['abstract']['value'].strip()
+        else:
+            abstract = paper_info['abstract'].strip()
+
         abstract = ' '.join(abstract.split())
 
-        paper_info_df = pd.concat([paper_info_df, pd.Series({'title': title,
-                                                             'abstract_url': f'{paper_id}',
-                                                             'pdf_url': f'{paper_id}'}).to_frame().T],
-                                  ignore_index=True)
+        if isinstance(paper_info['abstract'], dict):
+            authors = paper_info['authors']['value']
+        else:
+            authors = paper_info['authors']
 
-        abstracts_df = pd.concat([abstracts_df, pd.Series({'title': title,
-                                                           'abstract': repr(abstract)}).to_frame().T],
-                                 ignore_index=True)
+        authors = ', '.join(authors)
 
-        authors_df = pd.concat([authors_df, pd.Series({'title': title,
-                                                       'authors': authors}).to_frame().T],
-                                 ignore_index=True)
+        if isinstance(paper_info['abstract'], dict):
+            title = paper_info['title']['value'].strip()
+        else:
+            title = paper_info['title'].strip()
 
-    print('Writing tables to files')
-    save_dir = Path(out_dir) / f'{conference}' / f'{year}'
-    if not save_dir.exists():
-        print(f'Creating folder {save_dir}')
-        save_dir.mkdir(parents=True)
+        papers_infos.append({
+            'abstract': abstract,
+            'authors': authors,
+            'paper_id': f'{paper_id}',
+            'title': title,
+            })
 
-    paper_info_df.to_csv(save_dir / 'paper_info.csv', sep=';', index=False)
-    abstracts_df.to_csv(save_dir / 'abstracts.csv', sep='|', index=False)
-    authors_df.to_csv(save_dir / 'authors.csv', sep=';', index=False)
+    return papers_infos
 
-    # if requested, download pdfs to a subdirectory.
-    if get_pdfs:
-        pdf_out_dir = save_dir / 'papers'
-        if not pdf_out_dir.exists():
-            print(f'Creating folder {pdf_out_dir}')
-            pdf_out_dir.mkdir(parents=True)
 
-        print('Downloading pdf files')
-        with tqdm(accepted_papers.items(), unit='pdf') as pbar:
-            for paper_id, paper_info in pbar:
-                filename = f'{paper_id}.pdf'
-                pbar.set_description(filename)
-                pdf_outfile = pdf_out_dir / filename
-
-                if not pdf_outfile.exists():
-                    try:
-                        pdf_binary = client.get_pdf(paper_id)
-                        pdf_outfile.write_bytes(pdf_binary)
-
-                    except Exception:
-                        print(
-                            f'Error while trying to get pdf for {paper_id}: {paper_info["title"].strip()}\n'
-                            f'at https://openreview.net/pdf?id={paper_id}')
+def _get_all_venues(client: OpenReviewClient) -> list[str]:
+    return client.get_group(id='venues').members
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--conference', type=str, required=True,
-                        choices=('iclr', 'icml', 'neurips', 'neurips_workshop'), help='conference to scrape data')
+                        choices=tuple(VENUES_NAMES.keys()), help='conference to scrape data')
     parser.add_argument('-d', '--download_pdfs', action='store_true', help='if included, download pdfs')
     parser.add_argument('-l', '--log_level', type=str, default='warning',
                         choices=('debug', 'info', 'warning', 'error', 'critical', 'print'),
                         help='log level to debug')
-    parser.add_argument('-o', '--outdir', default='data/', help='directory where data should be saved')
+    parser.add_argument('-o', '--out_dir', type=Path, default=Path('data/'), help='directory where data should be saved')
     parser.add_argument('--password', default='', help='defaults to empty string (guest user)')
     parser.add_argument('--username', default='', help='defaults to empty string (guest user)')
+    parser.add_argument('-w', '--include_workshops', action='store_true', help='if included, include workshops')
     parser.add_argument('-y', '--year', type=str, required=True, help='year of the conference')
     args = parser.parse_args()
 
     year = int(args.year)
-    if year > 2023 or (year == 2023 and args.conference == 'neurips'):
-        client = openreview.Client(baseurl='https://api2.openreview.net', username=args.username, password=args.password)
-        download_conference_info(client, args.conference, args.year, args.outdir, get_pdfs=args.download_pdfs)
+    if year >= 2023:
+        client = OpenReviewClient(baseurl='https://api2.openreview.net', username=args.username, password=args.password)
     else:
-        client = openreview.Client(baseurl='https://api.openreview.net', username=args.username, password=args.password)
-        download_conference_info_old_api(client, args.conference, args.year, args.outdir, get_pdfs=args.download_pdfs)
+        client = Client(baseurl='https://api.openreview.net', username=args.username, password=args.password)
+
+    print('Getting openreview metadata for main conference')
+
+    papers_infos = _download_conference_info(client, args.conference, args.year, main_conference=True)
+
+    if len(papers_infos) == 0:
+        print(f'\tNo data found for main conference {args.conference} {args.year}')
+
+    if args.include_workshops:
+        print('Getting openreview metadata for workshops')
+        # add random sleep between api calls
+        sleep(uniform(1., 2.))
+        workshop_papers_infos = _download_conference_info(client, args.conference, args.year, main_conference=False)
+
+        if len(workshop_papers_infos) == 0:
+            print(f'\tNo data found for workshops in conference {args.conference} {args.year}')
+        else:
+            papers_infos += workshop_papers_infos
+
+    if len(papers_infos) > 0:
+        _save_and_download_papers(papers_infos, args.conference, args.year, args.out_dir, args.download_pdfs, client)
+
+    else:
+        print(f'\tNo data found for conference {args.conference} {args.year} in openreview')

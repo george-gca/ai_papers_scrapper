@@ -130,4 +130,5 @@ class NeuripsSpider(BaseSpider):
         item['title'] = self.clean_html_tags(item['title'])
         item['title'] = self.clean_extra_whitespaces(item['title'])
         item['title'] = self.clean_quotes(item['title'])
+        item['source_url'] = 7
         yield item
