@@ -14,4 +14,5 @@ class PdfFilesItem(scrapy.Item):
     authors = scrapy.Field()
     file_urls = scrapy.Field() # used to download the pdfs
     pdf_url = scrapy.Field()
+    source_url = scrapy.Field()
     title = scrapy.Field()
