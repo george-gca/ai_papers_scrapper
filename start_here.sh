@@ -42,6 +42,7 @@ conferences=(
     # "eccv 2018"
     # "eccv 2020"
     # "eccv 2022"
+    # "eccv 2024"
     # "emnlp 2017"
     # "emnlp 2018"
     # "emnlp 2019"
@@ -81,7 +82,7 @@ conferences=(
     # "ijcai 2021"
     # "ijcai 2022"
     # "ijcai 2023"
-    "ijcai 2024"
+    # "ijcai 2024"
     # "ijcnlp 2017"
     # "ijcnlp 2019"
     # "ijcnlp 2021"
@@ -118,6 +119,7 @@ conferences=(
     # "sigdial 2021"
     # "sigdial 2022"
     # "sigdial 2023"
+    # "sigdial 2024"
     # "tacl 2017"
     # "tacl 2018"
     # "tacl 2019"
@@ -133,7 +135,7 @@ conferences=(
     # "wacv 2024 no_subpage"
 )
 
-# update_papers_with_code=1
+update_papers_with_code=1
 
 acl_conferences=(
     "acl"
