@@ -29,11 +29,15 @@ class SIGGRAPHSpider(BaseSpider):
 
         for i, header in enumerate(response.xpath(xpath_str)):
             if header.xpath('text()').get().strip() == self.year:
-                links = response.xpath(f'{xpath_str}[{i+2}]/div/ul/li/a')
+                if self.conference == 'siggraph':
+                    links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div[{i+2}]/div/ul/li/a')
+                else: # if self.conference == 'siggraph-asia':
+                    links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[1]/div[{i+2}]/div/ul/li/a')
+
                 for link in links:
                     info_link = link.xpath('@href').get()
                     if info_link.startswith(('https://www.siggraph.org/wp-content/uploads/', 'https://www.siggraph.org/sites/default/files/')):
-                        self.logger.debug(f'Found {info_link}')
+                        self.logger.info(f'Found {info_link}')
                         yield scrapy.Request(
                             url=info_link,
                             callback=self.parse_abstract,
