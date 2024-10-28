@@ -36,7 +36,8 @@ Currently supports the following conferences, from 2017 and on:
 | [NeurIPS Datasets and Benchmarks Proceedings](https://datasets-benchmarks-proceedings.neurips.cc/) | NeurIPS Track on Datasets and Benchmarks (2021) |
 | [OpenReview](https://openreview-py.readthedocs.io/en/latest/) | ICLR |
 | [SIGCHI](https://sigchi.org/) | SIGCHI (2018 and on, abstracts only) |
-| [ The Computer Vision Foundation open access](https://openaccess.thecvf.com/) | CVPR, ICCV (odd years), WACV (2020 and on) |
+| [SIGGRAPH](https://www.siggraph.org/siggraph-events/conferences/) | SIGGRAPH (2017 and on, abstracts only) |
+| [The Computer Vision Foundation open access](https://openaccess.thecvf.com/) | CVPR, ICCV (odd years), WACV (2020 and on) |
 
 ## Requirements
 
@@ -98,3 +99,4 @@ Since some conferences have multiple sources, I created a `source_url` field to 
 | 8          | sigchi      |
 | 9          | cvf         |
 | 10         | arxiv       |
+| 11         | siggraph    |

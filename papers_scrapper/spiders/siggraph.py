@@ -24,13 +24,15 @@ class SIGGRAPHSpider(BaseSpider):
             xpath_str = '//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div/h4'
         elif self.conference == 'siggraph-asia':
             xpath_str = '//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[1]/div/h4'
+        else:
+            raise ValueError(f'Conference {self.conference} not supported')
 
         for i, header in enumerate(response.xpath(xpath_str)):
             if header.xpath('text()').get().strip() == self.year:
                 links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div[{i+2}]/div/ul/li/a')
                 for link in links:
                     info_link = link.xpath('@href').get()
-                    if info_link.startswith('https://www.siggraph.org/wp-content/uploads/'):
+                    if info_link.startswith(('https://www.siggraph.org/wp-content/uploads/', 'https://www.siggraph.org/sites/default/files/')):
                         self.logger.debug(f'Found {info_link}')
                         yield scrapy.Request(
                             url=info_link,
@@ -51,9 +53,19 @@ class SIGGRAPHSpider(BaseSpider):
             abstract_text = ' '.join(t.strip() for t in abstract.xpath('p/text()').getall())
             authors = ', '.join(a.strip() for a in author_list.xpath('li/text()').getall())
 
+            if abstract_text.startswith('"') and abstract_text.endswith('"'):
+                abstract_text = abstract_text[1:-1].strip()
+
+            if title.startswith('"') and title.endswith('"'):
+                title = title[1:-1].strip()
+
+            if '\n' in title:
+                title = ' '.join(t.strip() for t in title.split('\n'))
+
             item = PdfFilesItem()
             item['abstract_url'] = link.replace('https://dl.acm.org/doi/', '')
             item['abstract'] = repr(abstract_text)
             item['authors'] = authors.strip()
             item['title'] = title
+            item['source_url'] = 11
             yield item

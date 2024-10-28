@@ -120,21 +120,21 @@ conferences=(
     # "sigdial 2022"
     # "sigdial 2023"
     # "sigdial 2024"
-    "siggraph 2017"
-    "siggraph 2018"
-    "siggraph 2019"
-    "siggraph 2020"
-    "siggraph 2021"
-    "siggraph 2022"
-    "siggraph 2023"
-    "siggraph 2024"
-    "siggraph-asia 2017"
-    "siggraph-asia 2018"
-    "siggraph-asia 2019"
-    "siggraph-asia 2020"
-    "siggraph-asia 2021"
-    "siggraph-asia 2022"
-    "siggraph-asia 2023"
+    # "siggraph 2017"
+    # "siggraph 2018"
+    # "siggraph 2019"
+    # "siggraph 2020"
+    # "siggraph 2021"
+    # "siggraph 2022"
+    # "siggraph 2023"
+    # "siggraph 2024"
+    # "siggraph-asia 2017"
+    # "siggraph-asia 2018"
+    # "siggraph-asia 2019"
+    # "siggraph-asia 2020"
+    # "siggraph-asia 2021"
+    # "siggraph-asia 2022"
+    # "siggraph-asia 2023"
     # "tacl 2017"
     # "tacl 2018"
     # "tacl 2019"
@@ -150,7 +150,7 @@ conferences=(
     # "wacv 2024 no_subpage"
 )
 
-update_papers_with_code=1
+# update_papers_with_code=1
 
 acl_conferences=(
     "acl"
@@ -177,6 +177,8 @@ for conference in "${conferences[@]}"; do
         else
             $run_command scrapy crawl aaai -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
         fi
+    elif [[ ${conf_year[0]} == "siggraph" ]] || [[ ${conf_year[0]} == "siggraph-asia" ]]; then
+        $run_command scrapy crawl siggraph -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
     elif [[ " ${acl_conferences[*]} " =~ " ${conf_year[0]} " ]]; then
         $run_command scrapy crawl acl -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
     elif [[ ${conf_year[0]} == "cvpr" ]] || [[ ${conf_year[0]} == "iccv" ]] || [[ ${conf_year[0]} == "wacv" ]]; then
