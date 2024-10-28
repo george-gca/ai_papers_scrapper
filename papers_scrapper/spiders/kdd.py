@@ -88,6 +88,7 @@ class KDDSpider(BaseSpider):
                 item['abstract'] = repr(abstract_text)
                 item['authors'] = authors.strip()
                 item['title'] = title
+                item['source_url'] = 5
                 yield item
 
     def parse_abstract(self, response: scrapy.http.TextResponse):
