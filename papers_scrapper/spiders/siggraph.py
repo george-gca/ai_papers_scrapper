@@ -51,7 +51,7 @@ class SIGGRAPHSpider(BaseSpider):
 
         for title, link, abstract, author_list in zip(titles, links, abstracts, authors):
             abstract_text = ' '.join(t.strip() for t in abstract.xpath('p/text()').getall())
-            authors = ', '.join(a.strip() for a in author_list.xpath('li/text()').getall())
+            authors_text = ', '.join(a.strip() for a in author_list.xpath('li/text()').getall())
 
             if abstract_text.startswith('"') and abstract_text.endswith('"'):
                 abstract_text = abstract_text[1:-1].strip()
@@ -70,7 +70,7 @@ class SIGGRAPHSpider(BaseSpider):
                 self.logger.warning(f'No abstract found for {title}')
                 continue
 
-            if len(authors) == 0:
+            if len(authors_text) == 0:
                 self.logger.warning(f'No authors found for {title}')
                 continue
 
@@ -81,7 +81,7 @@ class SIGGRAPHSpider(BaseSpider):
             item = PdfFilesItem()
             item['abstract_url'] = link.replace('https://dl.acm.org/doi/', '')
             item['abstract'] = repr(abstract_text)
-            item['authors'] = authors.strip()
+            item['authors'] = authors_text.strip()
             item['title'] = title
             item['source_url'] = 11
             yield item
