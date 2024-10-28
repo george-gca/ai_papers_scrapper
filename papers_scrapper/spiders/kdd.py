@@ -83,7 +83,7 @@ class KDDSpider(BaseSpider):
                 authors = ', '.join(authors)
 
                 item = PdfFilesItem()
-                item['abstract_url'] = abstract_link.replace('https://dl.acm.org/doi/abs/', '')
+                # item['abstract_url'] = abstract_link.replace('https://dl.acm.org/doi/abs/', '')
                 item['abstract_url'] = abstract_link.replace('https://dl.acm.org/doi/', '')
                 item['abstract'] = repr(abstract_text)
                 item['authors'] = authors.strip()
