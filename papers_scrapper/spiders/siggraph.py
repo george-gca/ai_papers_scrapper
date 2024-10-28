@@ -62,6 +62,22 @@ class SIGGRAPHSpider(BaseSpider):
             if '\n' in title:
                 title = ' '.join(t.strip() for t in title.split('\n'))
 
+            if len(title) == 0:
+                self.logger.warning(f'No title found for {link}')
+                continue
+
+            if len(abstract_text) == 0:
+                self.logger.warning(f'No abstract found for {title}')
+                continue
+
+            if len(authors) == 0:
+                self.logger.warning(f'No authors found for {title}')
+                continue
+
+            if len(link) == 0:
+                self.logger.warning(f'No link found for {title}')
+                continue
+
             item = PdfFilesItem()
             item['abstract_url'] = link.replace('https://dl.acm.org/doi/', '')
             item['abstract'] = repr(abstract_text)
