@@ -49,3 +49,6 @@ class BaseSpider(CrawlSpider):
         while (text.startswith('"') and text.endswith('"')) or (text.startswith("'") and text.endswith("'")):
             text = text[1:-1].strip()
         return text
+
+    def remove_line_breaks(self, text: str) -> str:
+        return ' '.join(t.strip() for t in text.split())

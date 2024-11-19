@@ -64,7 +64,13 @@ class SIGGRAPHSpider(BaseSpider):
                 title = title[1:-1].strip()
 
             if '\n' in title:
-                title = ' '.join(t.strip() for t in title.split('\n'))
+                title = self.remove_line_breaks(title)
+
+            if '\n' in abstract_text:
+                abstract_text = self.remove_line_breaks(abstract_text)
+
+            if '\n' in authors_text:
+                authors_text = self.remove_line_breaks(authors_text)
 
             if len(title) == 0:
                 self.logger.warning(f'No title found for {link}')
