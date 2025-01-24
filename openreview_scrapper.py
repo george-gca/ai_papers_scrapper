@@ -78,9 +78,13 @@ def _save_and_download_papers(
 
     # if there are papers already, append to them
     if (save_dir / 'paper_info.csv').exists():
-        paper_info_df = pd.concat([pd.read_csv(save_dir / 'paper_info.csv', sep=';'), paper_info_df], ignore_index=True)
-        abstracts_df = pd.concat([pd.read_csv(save_dir / 'abstracts.csv', sep='|'), abstracts_df], ignore_index=True)
-        authors_df = pd.concat([pd.read_csv(save_dir / 'authors.csv', sep=';'), authors_df], ignore_index=True)
+        try:
+            paper_info_df = pd.concat([pd.read_csv(save_dir / 'paper_info.csv', sep=';'), paper_info_df], ignore_index=True)
+            abstracts_df = pd.concat([pd.read_csv(save_dir / 'abstracts.csv', sep='|'), abstracts_df], ignore_index=True)
+            authors_df = pd.concat([pd.read_csv(save_dir / 'authors.csv', sep=';'), authors_df], ignore_index=True)
+
+        except pd.errors.EmptyDataError:
+            print('Empty paper_info.csv found')
 
         # remove duplicates
         previous_len = len(paper_info_df)
