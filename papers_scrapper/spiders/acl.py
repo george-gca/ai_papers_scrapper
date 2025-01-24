@@ -78,11 +78,15 @@ class ACLSpider(BaseSpider):
 
     def parse_abstract(self, response: scrapy.http.TextResponse):
         item = response.meta['item']
-
         file_url = response.xpath('//*[@id="main"]/div[1]/div[2]/a[1]/@href').get()
+
         if file_url is None:
             file_url = response.xpath('//*[@id="main"]/div[2]/div[2]/a[1]/@href').get()
-        if len(file_url) < 5:
+
+            if file_url is None:
+                file_url = response.xpath('//*[@id="main"]/div[3]/div[2]/a[1]/@href').get()
+
+        if file_url is None or len(file_url) < 5:
             self.logger.warning(f'No PDF found for "{item["title"]}": {item["abstract_url"]}')
             return
 
@@ -90,11 +94,16 @@ class ACLSpider(BaseSpider):
         item['pdf_url'] = file_url.replace('https://aclanthology.org/', '')
 
         abstract = response.xpath('//*[@id="main"]/div[1]/div[1]/div/div/text()').get()
+
         if abstract is None:
             abstract = response.xpath('//*[@id="main"]/div[2]/div[1]/div/div/span').get()
+
             if abstract is None:
-                self.logger.warning(f'No abstract found for "{item["title"]}": {item["abstract_url"]}')
-                return
+                abstract = response.xpath('//*[@id="main"]/div[3]/div[1]/div/div/span').get()
+
+                if abstract is None:
+                    self.logger.warning(f'No abstract found for "{item["title"]}": {item["abstract_url"]}')
+                    return
 
         abstract = abstract.strip()
         if abstract.startswith('"') and abstract.endswith('"'):
