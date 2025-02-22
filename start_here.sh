@@ -21,12 +21,11 @@ conferences=(
     # "acl 2022"
     # "acl 2023"
     # "acl 2024"
-    # coling happens on even years
     # "coling 2018"
     # "coling 2020"
     # "coling 2022"
     # "coling 2024"
-    "coling 2025"
+    # "coling 2025"
     # "cvpr 2017 no_subpage"
     # "cvpr 2018"
     # "cvpr 2019"
@@ -69,6 +68,7 @@ conferences=(
     # "iclr 2022"
     # "iclr 2023"
     # "iclr 2024"
+    "iclr 2025"
     # "icml 2017"
     # "icml 2018"
     # "icml 2019"
@@ -153,7 +153,7 @@ conferences=(
     # "wacv 2024 no_subpage"
 )
 
-# update_papers_with_code=1
+update_papers_with_code=1
 
 acl_conferences=(
     "acl"
@@ -192,7 +192,7 @@ for conference in "${conferences[@]}"; do
         fi
     elif [[ ${conf_year[0]} == "icml" ]]; then
         $run_command scrapy crawl mlr_press -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
-    else # eccv, ijcai, or neurips
+    elif [[ ${conf_year[0]} != "iclr" ]]; then # eccv, ijcai, or neurips
         $run_command scrapy crawl ${conf_year[0]} -s LOG_LEVEL=INFO -a year=${conf_year[1]}
     fi
 
