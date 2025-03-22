@@ -68,7 +68,8 @@ class MLRPressSpider(BaseSpider):
     def parse_abstract(self, response: scrapy.http.TextResponse):
         item = response.meta['item']
 
-        abstract = response.xpath('//*[@id="abstract"]/text()').get()
+        abstract = ' '.join(response.xpath('//*[@id="abstract"]').getall())
+
         if abstract is None:
             self.logger.warning(
                 f'No abstract found for: {item["abstract_url"]}')
