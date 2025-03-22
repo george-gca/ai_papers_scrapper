@@ -68,7 +68,7 @@ conferences=(
     # "iclr 2022"
     # "iclr 2023"
     # "iclr 2024"
-    "iclr 2025"
+    # "iclr 2025"
     # "icml 2017"
     # "icml 2018"
     # "icml 2019"
@@ -151,9 +151,10 @@ conferences=(
     # "wacv 2022 no_subpage"
     # "wacv 2023 no_subpage"
     # "wacv 2024 no_subpage"
+    "wacv 2025 no_subpage"
 )
 
-update_papers_with_code=1
+# update_papers_with_code=1
 
 acl_conferences=(
     "acl"
