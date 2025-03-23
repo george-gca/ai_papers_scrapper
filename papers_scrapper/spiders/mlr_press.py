@@ -7,24 +7,24 @@ from ..items import PdfFilesItem
 
 class MLRPressSpider(BaseSpider):
     name = 'mlr_press'
-    allowed_domains = ['proceedings.mlr.press/']
-    start_urls = ['http://proceedings.mlr.press/']
+    # allowed_domains = ['proceedings.mlr.press/']
+    start_urls = ['https://proceedings.mlr.press/']
 
     def __init__(self, conference: str = '', year: str = ''):
         BaseSpider.__init__(self, conference, year)
 
     def start_requests(self):
         for url in self.start_urls:
-            self.logger.info(
-                f'Start scraping {url} for {self.year}')
+            self.logger.info(f'Start scraping {url} for {self.year}')
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response: scrapy.http.TextResponse):
+        # inspect_response(response, self)
         conference_names = response.xpath('/html/body/main/div/article/div/ul[3]/li/text()').getall()
         links = response.xpath('/html/body/main/div/article/div/ul[3]/li/a/@href').getall()
         correct_link = [link for c, link in zip(conference_names, links) if self.conference.upper() in c and self.year in c]
         if len(correct_link) == 0:
-            self.logger.info(f'Could not find {self.conference} {self.year}')
+            self.logger.warning(f'Could not find {self.conference} {self.year}')
             return
 
         correct_link = correct_link[0]
