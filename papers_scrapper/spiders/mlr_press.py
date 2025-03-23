@@ -22,19 +22,19 @@ class MLRPressSpider(BaseSpider):
         # inspect_response(response, self)
         conference_names = response.xpath('/html/body/main/div/article/div/ul[3]/li/text()').getall()
         links = response.xpath('/html/body/main/div/article/div/ul[3]/li/a/@href').getall()
-        correct_link = [link for c, link in zip(conference_names, links) if self.conference.upper() in c and self.year in c]
-        if len(correct_link) == 0:
+        correct_links = [link for c, link in zip(conference_names, links) if self.conference.upper() in c and self.year in c]
+        if len(correct_links) == 0:
             self.logger.warning(f'Could not find {self.conference} {self.year}')
             return
 
-        correct_link = correct_link[0]
-        subpage_url = response.urljoin(correct_link)
-        self.logger.debug(f'Found {subpage_url}')
-        yield scrapy.Request(
-            url=subpage_url,
-            callback=self.parse_subpage,
-            dont_filter=True
-        )
+        for correct_link in correct_links:
+            subpage_url = response.urljoin(correct_link)
+            self.logger.info(f'Found {subpage_url}')
+            yield scrapy.Request(
+                url=subpage_url,
+                callback=self.parse_subpage,
+                dont_filter=True
+            )
 
     def parse_subpage(self, response: scrapy.http.TextResponse):
         # inspect_response(response, self)
