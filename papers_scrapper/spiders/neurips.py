@@ -7,7 +7,7 @@ from ..items import PdfFilesItem
 
 class NeuripsSpider(BaseSpider):
     name = 'neurips'
-    allowed_domains = ['papers.nips.cc/', 'datasets-benchmarks-proceedings.neurips.cc/']
+    # allowed_domains = ['papers.nips.cc/', 'datasets-benchmarks-proceedings.neurips.cc/']
     start_urls = ['https://papers.nips.cc/paper/', 'https://datasets-benchmarks-proceedings.neurips.cc/paper/']
 
     def __init__(self,  year: str = ''):
