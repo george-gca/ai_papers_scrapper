@@ -149,12 +149,12 @@ def _download_conference_info(
     venues = _get_all_venues(client)
 
     if main_conference:
-        submissions_urls = [f'{v}/-/Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/Conference' in v]
-        blind_submissions_urls = [f'{v}/-/Blind_Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/Conference' in v]
+        submissions_urls = [f'{v}/-/Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/Conference'.lower() in v.lower()]
+        blind_submissions_urls = [f'{v}/-/Blind_Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/Conference'.lower() in v.lower()]
 
     else:
-        submissions_urls = [f'{v}/-/Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/Workshop' in v]
-        blind_submissions_urls = [f'{v}/-/Blind_Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/Workshop' in v]
+        submissions_urls = [f'{v}/-/Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/Workshop'.lower() in v.lower()]
+        blind_submissions_urls = [f'{v}/-/Blind_Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/Workshop'.lower() in v.lower()]
 
     submissions = []
     for url, blind_url in zip(submissions_urls, blind_submissions_urls):
