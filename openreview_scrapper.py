@@ -33,6 +33,7 @@ VENUES_NAMES = {
 }
 
 DECISION_KEYS = (
+    ('acceptance', 'decision'),
     ('Decision', 'decision'),
     ('Meta_Review', 'recommendation'),
 )
@@ -170,7 +171,22 @@ def _download_conference_info(
             submissions += new_submissions
             continue
 
+        lower_url = '/'.join(url.split('/')[:-1] + [url.split('/')[-1].lower()])
+        new_submissions = client.get_all_notes(invitation=lower_url, details='directReplies')
+        sleep(uniform(1., 2.))
+        if len(new_submissions) > 0:
+            submissions += new_submissions
+            continue
+
         new_submissions = client.get_all_notes(invitation=blind_url, details='directReplies')
+        sleep(uniform(1., 2.))
+        if len(new_submissions) > 0:
+            submissions += new_submissions
+            continue
+
+        lower_url = '/'.join(blind_url.split('/')[:-1] + [blind_url.split('/')[-1].lower()])
+        new_submissions = client.get_all_notes(invitation=lower_url, details='directReplies')
+        sleep(uniform(1., 2.))
         if len(new_submissions) > 0:
             submissions += new_submissions
 
