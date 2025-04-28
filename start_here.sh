@@ -13,6 +13,7 @@ conferences=(
     # "aaai 2022"
     # "aaai 2023"
     # "aaai 2024"
+    "aaai 2025"
     # "acl 2017"
     # "acl 2018"
     # "acl 2019"
@@ -151,7 +152,7 @@ conferences=(
     # "wacv 2022 no_subpage"
     # "wacv 2023 no_subpage"
     # "wacv 2024 no_subpage"
-    "wacv 2025 no_subpage"
+    # "wacv 2025 no_subpage"
 )
 
 # update_papers_with_code=1

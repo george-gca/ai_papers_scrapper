@@ -9,7 +9,7 @@ from ..items import PdfFilesItem
 
 class AAAISpider(BaseSpider):
     name = 'aaai'
-    allowed_domains = ['aaai.org/', 'ojs.aaai.org/']
+    # allowed_domains = ['aaai.org/', 'ojs.aaai.org/']
     start_urls = ['https://aaai.org/aaai-publications/aaai-conference-proceedings/']
 
     def __init__(self, conference: str = '', year: str = '', new_style: bool = True, subpage: bool = True):
@@ -26,7 +26,7 @@ class AAAISpider(BaseSpider):
         for link in response.xpath('//*[@id="genesis-content"]/article/div/div[2]/div/div/div/div/div/div[2]/div/p/a'):
             link_str = link.xpath('text()').get().strip()
             # fix for 2024 links, since 2023 links don't currently have their own links
-            if link_str == self.year or (self.year == '2024' and link_str == '2023'):
+            if link_str == self.year:
                 link_url = link.xpath('@href').get()
                 self.logger.info(f'Scraping {link_url}')
                 yield scrapy.Request(
@@ -48,7 +48,7 @@ class AAAISpider(BaseSpider):
                 )
         else:
             # new style
-            for link in response.xpath('/html/body/div/div[1]/div[1]/div/ul/li/div/h2/a'):
+            for link in response.xpath('//*[@id="genesis-content"]/div[2]/p/a'):
                 if f'aaai-{year - 2000}' in link.xpath('text()').get().strip().lower():
                     link_url = link.xpath('@href').get()
                     self.logger.info(f'Scraping proceeding {link_url}')
@@ -82,6 +82,10 @@ class AAAISpider(BaseSpider):
             item['title'] = title
             item['authors'] = authors.strip()
 
+            if len(item['authors']) == 0:
+                self.logger.debug(f'Could not find authors for {title}')
+                continue
+
             self.logger.debug(f'Found {abstract_link} for {title}')
             yield scrapy.Request(
                 url=abstract_link,
@@ -102,7 +106,10 @@ class AAAISpider(BaseSpider):
         else:
             abstract = response.xpath('/html/body/div/div[1]/div[1]/div/article/div/div[1]/section[4]/text()').getall()
             if len(abstract) == 0:
-                return
+                abstract = response.xpath('/html/body/div/div[1]/div[1]/div/article/div/div[1]/section[3]/text()').getall()
+
+                if len(abstract) == 0:
+                    return
 
             abstract = abstract[-1]
             if len(abstract) == 0:
