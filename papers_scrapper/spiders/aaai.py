@@ -71,7 +71,7 @@ class AAAISpider(BaseSpider):
             authors_line = response.xpath('/html/body/div/div[1]/div[1]/div/div/div[2]/div/ul/li/div/div/div[1]/text()').getall()
 
         for link, authors in zip(links, authors_line):
-            title = link.xpath('text()').get().strip()
+            title = link.xpath('string(.)').get().strip()
             abstract_link = link.xpath('@href').get()
 
             item = PdfFilesItem()
