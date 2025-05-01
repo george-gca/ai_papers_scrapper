@@ -99,8 +99,8 @@ class AAAISpider(BaseSpider):
         item = response.meta['item']
 
         if year <= 2022:
-            abstract = response.xpath('//*[@id="genesis-content"]/article/div[2]/div[1]/div/p/text()').get()
-            file_url = response.xpath('//*[@id="genesis-content"]/article/div[1]/a[1]/@href').get()
+            abstract = response.xpath('string(//*[@id="genesis-content"]/article/div/div[6]/div)').get()
+            file_url = response.xpath('//div[@class="pdf-button"]/a/@href').get()
             pdf_url = '/'.join(file_url.split('/')[-2:])[:-4]
 
         else:
@@ -132,5 +132,7 @@ class AAAISpider(BaseSpider):
         item['title'] = self.clean_extra_whitespaces(item['title'])
         item['title'] = self.clean_quotes(item['title'])
         item['source_url'] = 1
+
+        self.check_abstract_is_complete(item["title"], abstract, response.url)
 
         yield item
