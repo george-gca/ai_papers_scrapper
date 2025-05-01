@@ -56,3 +56,9 @@ class BaseSpider(CrawlSpider):
 
     def remove_line_breaks(self, text: str) -> str:
         return ' '.join(t.strip() for t in text.split())
+
+    def check_abstract_is_complete(self, title: str, abstract: str, url: str) -> None:
+        if not abstract.endswith('.') and not abstract.split()[-1].startswith(('github', 'http')):
+            self.logger.warning(f'Abstract for paper {title} does not end with ".". Check if abstract is complete.')
+            self.logger.warning(url)
+            self.logger.warning(abstract)
