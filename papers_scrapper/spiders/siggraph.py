@@ -7,7 +7,7 @@ from ..items import PdfFilesItem
 
 class SIGGRAPHSpider(BaseSpider):
     name = 'siggraph'
-    allowed_domains = ['siggraph.org', ]
+    # allowed_domains = ['siggraph.org', ]
     start_urls = ['https://www.siggraph.org/siggraph-events/conferences/']
 
     def __init__(self, conference: str='', year: str = ''):
@@ -36,7 +36,9 @@ class SIGGRAPHSpider(BaseSpider):
 
                 for link in links:
                     info_link = link.xpath('@href').get()
-                    if info_link.startswith(('https://www.siggraph.org/wp-content/uploads/', 'https://www.siggraph.org/sites/default/files/')):
+                    if info_link.startswith(('https://www.siggraph.org/wp-content/uploads/',
+                                             'https://www.siggraph.org/sites/default/files/',
+                                             'https://dev.siggraph.org/sites/default/files/')):
                         self.logger.info(f'Found {info_link}')
                         yield scrapy.Request(
                             url=info_link,
