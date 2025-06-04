@@ -46,7 +46,7 @@ def _save_and_download_papers(
         get_pdfs: bool = False,
         client: None | Client | OpenReviewClient = None,
         ) -> None:
-    # save papers to csv files, and download pdfs if requested
+    # save papers to tsv files, and download pdfs if requested
     paper_info_df = pd.DataFrame(columns=['title', 'abstract_url', 'pdf_url', 'source_url'])
     abstracts_df = pd.DataFrame(columns=['title', 'abstract'])
     authors_df = pd.DataFrame(columns=['title', 'authors'])
@@ -78,14 +78,14 @@ def _save_and_download_papers(
         save_dir.mkdir(parents=True)
 
     # if there are papers already, append to them
-    if (save_dir / 'paper_info.csv').exists():
+    if (save_dir / 'paper_info.tsv').exists():
         try:
-            paper_info_df = pd.concat([pd.read_csv(save_dir / 'paper_info.csv', sep=';'), paper_info_df], ignore_index=True)
-            abstracts_df = pd.concat([pd.read_csv(save_dir / 'abstracts.csv', sep='|'), abstracts_df], ignore_index=True)
-            authors_df = pd.concat([pd.read_csv(save_dir / 'authors.csv', sep=';'), authors_df], ignore_index=True)
+            paper_info_df = pd.concat([pd.read_csv(save_dir / 'paper_info.tsv', sep='\t'), paper_info_df], ignore_index=True)
+            abstracts_df = pd.concat([pd.read_csv(save_dir / 'abstracts.tsv', sep='\t'), abstracts_df], ignore_index=True)
+            authors_df = pd.concat([pd.read_csv(save_dir / 'authors.tsv', sep='\t'), authors_df], ignore_index=True)
 
         except pd.errors.EmptyDataError:
-            print('Empty paper_info.csv found')
+            print('Empty paper_info.tsv found')
 
         # remove duplicates
         previous_len = len(paper_info_df)
@@ -101,9 +101,9 @@ def _save_and_download_papers(
             print(f'\tNo values were written for {conference} {year}')
             return
 
-    paper_info_df.to_csv(save_dir / 'paper_info.csv', sep=';', index=False)
-    abstracts_df.to_csv(save_dir / 'abstracts.csv', sep='|', index=False)
-    authors_df.to_csv(save_dir / 'authors.csv', sep=';', index=False)
+    paper_info_df.to_csv(save_dir / 'paper_info.tsv', sep='\t', index=False)
+    abstracts_df.to_csv(save_dir / 'abstracts.tsv', sep='\t', index=False)
+    authors_df.to_csv(save_dir / 'authors.tsv', sep='\t', index=False)
 
     # if requested, download pdfs to a subdirectory.
     if get_pdfs:

@@ -70,9 +70,9 @@ MEDIA_ALLOW_REDIRECTS = True
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'papers_scrapper.pipelines.PdfFilesPipeline': 1,
-    'papers_scrapper.pipelines.PaperInfoCsvExportPipeline': 10,
-    'papers_scrapper.pipelines.PaperAbstractCsvExportPipeline': 20,
-    'papers_scrapper.pipelines.PaperAuthorsCsvExportPipeline': 30,
+    'papers_scrapper.pipelines.PaperInfoTsvExportPipeline': 10,
+    'papers_scrapper.pipelines.PaperAbstractTsvExportPipeline': 20,
+    'papers_scrapper.pipelines.PaperAuthorsTsvExportPipeline': 30,
 }
 
 FILES_STORE = str(Path('data').resolve())

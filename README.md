@@ -6,9 +6,9 @@ Download papers pdfs and other information from main AI conferences (when public
     └── data
         └── conf
             └── year
-                ├── abstracts.csv       # format `title|abstract`
-                ├── authors.csv         # format `title;authors`
-                ├── paper_info.csv      # format `title;abstract_url;pdf_url`
+                ├── abstracts.tsv       # format `title    abstract`
+                ├── authors.tsv         # format `title    authors`
+                ├── paper_info.tsv      # format `title    abstract_url    pdf_url`
                 └── papers
                     ├── paper01.pdf     # pdf file from a paper
                     ├── paper02.pdf

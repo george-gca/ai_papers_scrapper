@@ -35,8 +35,8 @@ class PdfFilesPipeline(FilesPipeline):
         return str(info.spider.save_path / 'papers' / file_name)
 
 
-class CsvExportPipeline:
-    def __init__(self, file_name: str, fields: list[str], delimiter: str=';'):
+class TsvExportPipeline:
+    def __init__(self, file_name: str, fields: list[str], delimiter: str='\t'):
         self._delimiter = delimiter
         self._file_name = file_name
         self._fields_to_export = fields
@@ -64,16 +64,16 @@ class CsvExportPipeline:
         return item
 
 
-PaperInfoCsvExportPipeline = partial(CsvExportPipeline,
-    file_name='paper_info.csv',
+PaperInfoTsvExportPipeline = partial(TsvExportPipeline,
+    file_name='paper_info.tsv',
     fields=['title', 'abstract_url', 'pdf_url', 'source_url'],
     )
-PaperAbstractCsvExportPipeline = partial(CsvExportPipeline,
-    file_name='abstracts.csv',
-    fields=['title', 'abstract'], delimiter='|',
+PaperAbstractTsvExportPipeline = partial(TsvExportPipeline,
+    file_name='abstracts.tsv',
+    fields=['title', 'abstract'],
     )
-PaperAuthorsCsvExportPipeline = partial(CsvExportPipeline,
-    file_name='authors.csv',
+PaperAuthorsTsvExportPipeline = partial(TsvExportPipeline,
+    file_name='authors.tsv',
     fields=['title', 'authors'],
     )
 
