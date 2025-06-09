@@ -22,6 +22,14 @@ conferences=(
     # "acl 2022"
     # "acl 2023"
     # "acl 2024"
+    # "aistats 2017"
+    # "aistats 2018"
+    # "aistats 2019"
+    # "aistats 2020"
+    # "aistats 2021"
+    # "aistats 2022"
+    # "aistats 2023"
+    # "aistats 2024"
     # "coling 2018"
     # "coling 2020"
     # "coling 2022"
@@ -35,7 +43,7 @@ conferences=(
     # "cvpr 2022"
     # "cvpr 2023"
     # "cvpr 2024"
-    "cvpr 2025"
+    # "cvpr 2025"
     # "eacl 2017"
     # "eacl 2021"
     # "eacl 2023"
@@ -152,6 +160,12 @@ conferences=(
     # "tacl 2023"
     # "tacl 2024"
     # "tacl 2025"
+    # "uai 2019"
+    # "uai 2020"
+    # "uai 2021"
+    # "uai 2022"
+    # "uai 2023"
+    # "uai 2024"
     # "wacv 2020 no_subpage"
     # "wacv 2021 no_subpage"
     # "wacv 2022 no_subpage"
@@ -197,14 +211,14 @@ for conference in "${conferences[@]}"; do
         else
             $run_command scrapy crawl thecvf -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
         fi
-    elif [[ ${conf_year[0]} == "icml" ]]; then
+    elif [[ ${conf_year[0]} == "aistats" ]] || [[ ${conf_year[0]} == "icml" ]] || [[ ${conf_year[0]} == "uai" ]]; then
         $run_command scrapy crawl mlr_press -s LOG_LEVEL=INFO -a conference=${conf_year[0]} -a year=${conf_year[1]}
     elif [[ ${conf_year[0]} != "iclr" ]]; then # eccv, ijcai, or neurips
         $run_command scrapy crawl ${conf_year[0]} -s LOG_LEVEL=INFO -a year=${conf_year[1]}
     fi
 
     case "${conf_year[0]}" in
-        aaai|acl|coling|eacl|eccv|emnlp|iclr|icml|ijcai|ijcnlp|kdd|naacl|neurips|sigchi|sigdial ) is_openreview_conference=1;;
+        aaai|acl|aistats|coling|eacl|eccv|emnlp|iclr|icml|ijcai|ijcnlp|kdd|naacl|neurips|sigchi|sigdial|uai ) is_openreview_conference=1;;
         *) is_openreview_conference=0;;
     esac
 

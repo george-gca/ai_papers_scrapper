@@ -14,22 +14,27 @@ from tqdm import tqdm
 VENUES_NAMES = {
     'aaai': 'AAAI.org',
     'acl': 'aclweb.org/ACL',
+    'aistats': 'aistat.org/AISTATS',
     'coling': 'COLING.org',
-    # 'cvpr': 'thecvf.com/CVPR',
+    'cvpr': 'thecvf.com/CVPR',
     'eacl': 'eacl.org/EACL',
     'eccv': 'thecvf.com/ECCV',
     'emnlp': 'EMNLP',
-    # 'iccv': 'thecvf.com/ICCV',
+    'iccv': 'thecvf.com/ICCV',
     'iclr': 'ICLR.cc',
     'icml': 'ICML.cc',
+    'icra': 'IEEE.org/ICRA',
     'ijcai': 'ijcai.org/IJCAI',
     'ijcnlp': 'aclweb.org/AACL-IJCNLP',
+    # 'ijcv': 'dblp.org/journals/IJCV',
     'kdd': 'KDD.org',
     'naacl': 'aclweb.org/NAACL',
     'neurips': 'NeurIPS.cc',
     'sigchi': 'acm.org/CHI',
     'sigdial': 'SIGDIAL.org',
-    # 'wacv': 'thecvf.com/WACV',
+    # 'tpami': 'dblp.org/journals/PAMI',
+    'uai': 'auai.org/UAI',
+    'wacv': 'thecvf.com/WACV',
 }
 
 DECISION_KEYS = (
@@ -205,7 +210,9 @@ def _download_conference_info(
                 accepted_papers = {submission.forum: submission.content for submission in submissions
                                 for reply in submission.details["directReplies"]
                                 for invitation in reply["invitations"]
-                                if invitation.endswith(review_end) and reply["content"][decision_key]["value"] != 'Reject'}
+                                if invitation.endswith(review_end) and
+                                    decision_key in reply["content"] and
+                                    reply["content"][decision_key]["value"] != 'Reject'}
             else:
                 accepted_papers = {}
 
