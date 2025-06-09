@@ -12,29 +12,29 @@ from tqdm import tqdm
 
 # got from `client.get_group(id='venues').members`
 VENUES_NAMES = {
-    'aaai': 'AAAI.org',
-    'acl': 'aclweb.org/ACL',
-    'aistats': 'aistat.org/AISTATS',
-    'coling': 'COLING.org',
-    'cvpr': 'thecvf.com/CVPR',
-    'eacl': 'eacl.org/EACL',
-    'eccv': 'thecvf.com/ECCV',
-    'emnlp': 'EMNLP',
-    'iccv': 'thecvf.com/ICCV',
-    'iclr': 'ICLR.cc',
-    'icml': 'ICML.cc',
-    'icra': 'IEEE.org/ICRA',
-    'ijcai': 'ijcai.org/IJCAI',
-    'ijcnlp': 'aclweb.org/AACL-IJCNLP',
-    # 'ijcv': 'dblp.org/journals/IJCV',
-    'kdd': 'KDD.org',
-    'naacl': 'aclweb.org/NAACL',
-    'neurips': 'NeurIPS.cc',
-    'sigchi': 'acm.org/CHI',
-    'sigdial': 'SIGDIAL.org',
-    # 'tpami': 'dblp.org/journals/PAMI',
-    'uai': 'auai.org/UAI',
-    'wacv': 'thecvf.com/WACV',
+    'aaai': ('AAAI.org',),
+    'acl': ('aclweb.org/ACL',),
+    'aistats': ('aistat.org/AISTATS', 'aistats.org/AISTATS'),
+    'coling': ('COLING.org',),
+    'cvpr': ('thecvf.com/CVPR',),
+    'eacl': ('eacl.org/EACL',),
+    'eccv': ('thecvf.com/ECCV',),
+    'emnlp': ('EMNLP',),
+    'iccv': ('thecvf.com/ICCV',),
+    'iclr': ('ICLR.cc',),
+    'icml': ('ICML.cc',),
+    'icra': ('IEEE.org/ICRA',),
+    'ijcai': ('ijcai.org/IJCAI',),
+    'ijcnlp': ('aclweb.org/AACL-IJCNLP',),
+    # 'ijcv': ('dblp.org/journals/IJCV',),
+    'kdd': ('KDD.org',),
+    'naacl': ('aclweb.org/NAACL',),
+    'neurips': ('NeurIPS.cc',),
+    'sigchi': ('acm.org/CHI',),
+    'sigdial': ('SIGDIAL.org',),
+    # 'tpami': ('dblp.org/journals/PAMI',),
+    'uai': ('auai.org/UAI',),
+    'wacv': ('thecvf.com/WACV',),
 }
 
 DECISION_KEYS = (
@@ -153,14 +153,15 @@ def _download_conference_info(
     forum here means the paper id
     '''
     venues = _get_all_venues(client)
+    conference_venue = VENUES_NAMES[conference.lower()]
 
     if main_conference:
-        submissions_urls = [f'{v}/-/Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/conference'.lower() in v.lower()]
-        blind_submissions_urls = [f'{v}/-/Blind_Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/conference'.lower() in v.lower()]
+        submissions_urls = [f'{v}/-/Submission' for v in venues for c in conference_venue if f'{c}/{year}/conference'.lower() in v.lower()]
+        blind_submissions_urls = [f'{v}/-/Blind_Submission' for v in venues for c in conference_venue if f'{c}/{year}/conference'.lower() in v.lower()]
 
     else:
-        submissions_urls = [f'{v}/-/Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/workshop'.lower() in v.lower()]
-        blind_submissions_urls = [f'{v}/-/Blind_Submission' for v in venues if f'{VENUES_NAMES[conference.lower()]}/{year}/workshop'.lower() in v.lower()]
+        submissions_urls = [f'{v}/-/Submission' for v in venues for c in conference_venue if f'{c}/{year}/workshop'.lower() in v.lower()]
+        blind_submissions_urls = [f'{v}/-/Blind_Submission' for v in venues for c in conference_venue if f'{c}/{year}/workshop'.lower() in v.lower()]
 
     submissions = []
     for url, blind_url in zip(submissions_urls, blind_submissions_urls):

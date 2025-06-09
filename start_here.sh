@@ -30,6 +30,7 @@ conferences=(
     # "aistats 2022"
     # "aistats 2023"
     # "aistats 2024"
+    "aistats 2025"
     # "coling 2018"
     # "coling 2020"
     # "coling 2022"
