@@ -106,6 +106,12 @@ def _save_and_download_papers(
             print(f'\tNo values were written for {conference} {year}')
             return
 
+    authors_df['authors'] = authors_df['authors'].str.replace('*', '', regex=False)
+    authors_df['authors'] = authors_df['authors'].str.replace(' ,', ',', regex=False)
+    authors_df['authors'] = authors_df['authors'].str.replace(', and ', ', ', regex=False)
+    authors_df['authors'] = authors_df['authors'].str.replace(' and ', ', ', regex=False)
+    authors_df['authors'] = authors_df['authors'].str.replace(' & ', ', ', regex=False)
+
     paper_info_df.to_csv(save_dir / 'paper_info.tsv', sep='\t', index=False)
     abstracts_df.to_csv(save_dir / 'abstracts.tsv', sep='\t', index=False)
     authors_df.to_csv(save_dir / 'authors.tsv', sep='\t', index=False)
