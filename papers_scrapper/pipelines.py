@@ -60,12 +60,12 @@ class TsvExportPipeline:
         self.file_handler.close()
 
     def process_item(self, item: PdfFilesItem, spider: scrapy.spiders.Spider):
-        if item.authors is not None:
-            item.authors = item.authors.replace('*', '')
-            item.authors = item.authors.replace(' ,', ',')
-            item.authors = item.authors.replace(', and ', ', ')
-            item.authors = item.authors.replace(' and ', ', ')
-            item.authors = item.authors.replace(' & ', ', ')
+        if item['authors'] is not None:
+            item['authors'] = item['authors'].replace('*', '')
+            item['authors'] = item['authors'].replace(' ,', ',')
+            item['authors'] = item['authors'].replace(', and ', ', ')
+            item['authors'] = item['authors'].replace(' and ', ', ')
+            item['authors'] = item['authors'].replace(' & ', ', ')
         self.csv_exporter.export_item(item)
         return item
 
