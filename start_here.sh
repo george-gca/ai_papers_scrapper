@@ -147,6 +147,7 @@ conferences=(
     # "siggraph 2022"
     # "siggraph 2023"
     # "siggraph 2024"
+    "siggraph 2025"
     # "siggraph-asia 2017"
     # "siggraph-asia 2018"
     # "siggraph-asia 2019"
