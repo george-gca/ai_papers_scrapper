@@ -30,9 +30,21 @@ class SIGGRAPHSpider(BaseSpider):
         for i, header in enumerate(response.xpath(xpath_str)):
             if header.xpath('text()').get().strip() == self.year:
                 if self.conference == 'siggraph':
-                    links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div[{i+2}]/div/ul/li/a')
+                    links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div[{i+2}]/div/ul/li/a') + \
+                            response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div[{i+2}]/div/ul/li/p/a')
                 else: # if self.conference == 'siggraph-asia':
-                    links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[1]/div[{i+2}]/div/ul/li/a')
+                    links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[1]/div[{i+2}]/div/ul/li/a') + \
+                            response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[1]/div[{i+2}]/div/ul/li/p/a')
+
+                if len(links) == 0:
+                    if self.conference == 'siggraph':
+                        links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div[{i+2}]/div/ul/ul/li/a') + \
+                                response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div[{i+2}]/div/ul/ul/li/p/a')
+                    else: # if self.conference == 'siggraph-asia':
+                        links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[1]/div[{i+2}]/div/ul/ul/li/a') + \
+                                response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[1]/div[{i+2}]/div/ul/ul/li/p/a')
+
+                self.logger.info(f'Found {len(links)} links')
 
                 for link in links:
                     info_link = link.xpath('@href').get()
