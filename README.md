@@ -1,6 +1,6 @@
 # AI Papers Scrapper
 
-Download papers pdfs and other information from main AI conferences (when public available) and store it on `./data/`, creating one directory per conference, and one per year. More specifically, it creates the following structure:
+Download papers pdfs and other information from main AI conferences (when publicly available) and store it on `./data/`, creating one directory per conference, and one per year. More specifically, it creates the following structure:
 
     .
     └── data
