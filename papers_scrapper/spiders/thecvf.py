@@ -10,7 +10,7 @@ from ..items import PdfFilesItem
 
 class TheCVFSpider(BaseSpider):
     name = 'thecvf'
-    allowed_domains = ['openaccess.thecvf.com/']
+    # allowed_domains = ['openaccess.thecvf.com/']
     start_urls = ['https://openaccess.thecvf.com/']
 
     def __init__(self, conference: str='', year: str='', subpage: bool=True):
