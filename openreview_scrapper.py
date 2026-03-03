@@ -175,32 +175,36 @@ def _download_conference_info(
         try:
             new_submissions = client.get_all_notes(invitation=url, details='directReplies')
             sleep(uniform(1., 2.))
+            if len(new_submissions) > 0:
+                submissions += new_submissions
+                continue
+
+            lower_url = '/'.join(url.split('/')[:-1] + [url.split('/')[-1].lower()])
+            new_submissions = client.get_all_notes(invitation=lower_url, details='directReplies')
+            sleep(uniform(1., 2.))
+            if len(new_submissions) > 0:
+                submissions += new_submissions
+                continue
+
         except:
-            print(f'Error while trying to get papers submissions for {conference} {year}')
-            continue
+            print(f'Error while trying to get papers submissions for {conference} {year} at {url}')
+            try:
+                new_submissions = client.get_all_notes(invitation=blind_url, details='directReplies')
+                sleep(uniform(1., 2.))
+                if len(new_submissions) > 0:
+                    submissions += new_submissions
+                    continue
+        
+                lower_url = '/'.join(blind_url.split('/')[:-1] + [blind_url.split('/')[-1].lower()])
+                new_submissions = client.get_all_notes(invitation=lower_url, details='directReplies')
+                sleep(uniform(1., 2.))
+                if len(new_submissions) > 0:
+                    submissions += new_submissions    
 
-        if len(new_submissions) > 0:
-            submissions += new_submissions
-            continue
-
-        lower_url = '/'.join(url.split('/')[:-1] + [url.split('/')[-1].lower()])
-        new_submissions = client.get_all_notes(invitation=lower_url, details='directReplies')
-        sleep(uniform(1., 2.))
-        if len(new_submissions) > 0:
-            submissions += new_submissions
-            continue
-
-        new_submissions = client.get_all_notes(invitation=blind_url, details='directReplies')
-        sleep(uniform(1., 2.))
-        if len(new_submissions) > 0:
-            submissions += new_submissions
-            continue
-
-        lower_url = '/'.join(blind_url.split('/')[:-1] + [blind_url.split('/')[-1].lower()])
-        new_submissions = client.get_all_notes(invitation=lower_url, details='directReplies')
-        sleep(uniform(1., 2.))
-        if len(new_submissions) > 0:
-            submissions += new_submissions
+            except:
+                print(f'Error while trying to get papers submissions for {conference} {year} at {blind_url}')
+                import ipdb; ipdb.set_trace()
+                continue
 
     if len(submissions) == 0:
         # print(f'\tNo submissions found for {conference} {year}')
@@ -238,13 +242,17 @@ def _download_conference_info(
 
     papers_infos = []
     for paper_id, paper_info in accepted_papers.items():
-        if 'authors' not in paper_info:
+        if 'authors' not in paper_info or 'abstract' not in paper_info:
             continue
 
-        if isinstance(paper_info['abstract'], dict):
-            abstract = paper_info['abstract']['value'].strip()
-        else:
-            abstract = paper_info['abstract'].strip()
+        try:
+            if isinstance(paper_info['abstract'], dict):
+                abstract = paper_info['abstract']['value'].strip()
+            else:
+                abstract = paper_info['abstract'].strip()
+        except Exception as e:
+            print(f'Failed to fetch abstract information from paper info. Available keys: {list(paper_info.keys())}')
+            raise e
 
         abstract = ' '.join(abstract.split())
 
