@@ -1,7 +1,7 @@
 #!/bin/bash
-# Enable poetry if not running inside docker and poetry is installed
-if [[ $HOSTNAME != "docker-"* ]] && (hash poetry 2>/dev/null); then
-    run_command="poetry run"
+# Enable uv if not running inside docker and uv is installed
+if [[ $HOSTNAME != "docker-"* ]] && (hash uv 2>/dev/null); then
+    run_command="uv run"
 fi
 
 conferences=(

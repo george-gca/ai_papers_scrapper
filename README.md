@@ -25,27 +25,27 @@ Based on [CVPR_paper_search_tool by Jin Yamanaka](https://github.com/jiny2001/CV
 
 Currently supports the following conferences, from 2017 and on:
 
-| Source | Conferences |
-| --- | --- |
-| [AAAI Library](https://www.aaai.org/Library/AAAI/aaai-library.php) | AAAI |
-| [ACL Anthology](https://aclanthology.org/) | ACL, COLING (even years), EACL (odd years, except 2019), EMNLP, Findings (2020 and on), IJCNLP (odd years), NAACL (except 2017 and 2020), SIGDIAL, TACL |
-| [European Computer Vision Association](https://www.ecva.net/papers.php) | ECCV (even years) |
-| [International Joint Conferences on Artificial Intelligence Organization](https://www.ijcai.org/) | IJCAI |
-| [KDD](https://kdd.org/) | SIGKDD (abstracts only) |
-| [Proceedings of Machine Learning Research](https://proceedings.mlr.press/) | ICML |
-| [NeurIPS Proceedings](https://proceedings.neurips.cc/) | NeurIPS |
-| [NeurIPS Datasets and Benchmarks Proceedings](https://datasets-benchmarks-proceedings.neurips.cc/) | NeurIPS Track on Datasets and Benchmarks (2021) |
-| [OpenReview](https://openreview-py.readthedocs.io/en/latest/) | ICLR |
-| [SIGCHI](https://sigchi.org/) | SIGCHI (2018 and on, abstracts only) |
-| [SIGGRAPH](https://www.siggraph.org/siggraph-events/conferences/) | SIGGRAPH (2017 and on, abstracts only) |
-| [The Computer Vision Foundation open access](https://openaccess.thecvf.com/) | CVPR, ICCV (odd years), WACV (2020 and on) |
+| Source                                                                                             | Conferences                                                                                                                                             |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [AAAI Library](https://www.aaai.org/Library/AAAI/aaai-library.php)                                 | AAAI                                                                                                                                                    |
+| [ACL Anthology](https://aclanthology.org/)                                                         | ACL, COLING (even years), EACL (odd years, except 2019), EMNLP, Findings (2020 and on), IJCNLP (odd years), NAACL (except 2017 and 2020), SIGDIAL, TACL |
+| [European Computer Vision Association](https://www.ecva.net/papers.php)                            | ECCV (even years)                                                                                                                                       |
+| [International Joint Conferences on Artificial Intelligence Organization](https://www.ijcai.org/)  | IJCAI                                                                                                                                                   |
+| [KDD](https://kdd.org/)                                                                            | SIGKDD (abstracts only)                                                                                                                                 |
+| [Proceedings of Machine Learning Research](https://proceedings.mlr.press/)                         | ICML                                                                                                                                                    |
+| [NeurIPS Proceedings](https://proceedings.neurips.cc/)                                             | NeurIPS                                                                                                                                                 |
+| [NeurIPS Datasets and Benchmarks Proceedings](https://datasets-benchmarks-proceedings.neurips.cc/) | NeurIPS Track on Datasets and Benchmarks (2021)                                                                                                         |
+| [OpenReview](https://openreview-py.readthedocs.io/en/latest/)                                      | ICLR                                                                                                                                                    |
+| [SIGCHI](https://sigchi.org/)                                                                      | SIGCHI (2018 and on, abstracts only)                                                                                                                    |
+| [SIGGRAPH](https://www.siggraph.org/siggraph-events/conferences/)                                  | SIGGRAPH (2017 and on, abstracts only)                                                                                                                  |
+| [The Computer Vision Foundation open access](https://openaccess.thecvf.com/)                       | CVPR, ICCV (odd years), WACV (2020 and on)                                                                                                              |
 
 ## Requirements
 
 [Docker](https://www.docker.com/) or, for local installation:
 
 - Python 3.10+
-- [Poetry](https://python-poetry.org/docs/)
+- [uv](https://docs.astral.sh/uv/)
 
 ## Usage
 
@@ -53,10 +53,10 @@ To make it easier to run the code, with or without Docker, I created a few helpe
 
 ### Running without Docker
 
-You first need to install [Python Poetry](https://python-poetry.org/docs/). Then, you can install the dependencies and run the code:
+You first need to install [uv](https://docs.astral.sh/uv/). Then, you can install the dependencies and run the code:
 
 ```bash
-poetry install
+uv sync
 bash start_here.sh
 ```
 
