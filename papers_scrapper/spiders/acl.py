@@ -10,7 +10,7 @@ from ..items import PdfFilesItem
 
 class ACLSpider(BaseSpider):
     name = 'acl'
-    allowed_domains = ['aclanthology.org/']
+    # allowed_domains = ['aclanthology.org/']
     start_urls = ['https://aclanthology.org/']
 
     def __init__(self, conference: str='', year: str=''):
@@ -50,6 +50,10 @@ class ACLSpider(BaseSpider):
     def parse_subpage(self, response: scrapy.http.TextResponse):
         # inspect_response(response, self)
         links = response.xpath('//*[@id="main"]/div[2]/p/span[2]/strong/a')
+
+        if len(links) == 0:
+            links = response.xpath('//*[@id="main"]/div[2]/div/span/strong/a')
+
         for link in links:
             title = link.xpath('.//text()').getall()
             title = ''.join(title).strip()
