@@ -39,6 +39,12 @@ class TheCVFSpider(BaseSpider):
                 f'Start scraping {workshop_track}')
             yield scrapy.Request(url=workshop_track, callback=self.parse)
 
+            findings_track = f'{url}{self.conference.upper()}{self.year}_findings'
+            if self.subpage:
+                yield scrapy.Request(url=findings_track, callback=self.parse)
+            else:
+                yield scrapy.Request(url=findings_track, callback=self.parse_subpage)
+
     def parse(self, response: scrapy.http.TextResponse):
         # inspect_response(response, self)
         for link in response.xpath('//*[@id="content"]/dl/dd/a/@href'):
