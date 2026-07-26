@@ -13,7 +13,7 @@ class NeuripsSpider(BaseSpider):
     def __init__(self,  year: str = ''):
         BaseSpider.__init__(self, 'neurips', year)
 
-    def start_requests(self):
+    async def start(self):
         for url in self.start_urls:
             link = f'{url}{self.year}'
             self.logger.info(f'Start scraping {link} for {self.year}')

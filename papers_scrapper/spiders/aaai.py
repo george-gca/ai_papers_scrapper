@@ -15,7 +15,7 @@ class AAAISpider(BaseSpider):
     def __init__(self, conference: str = "", year: str = "", new_style: bool = True, subpage: bool = True):
         BaseSpider.__init__(self, conference, year)
 
-    def start_requests(self):
+    async def start(self):
         for url in self.start_urls:
             self.logger.info(f"Start scraping {url} for {self.year}")
             yield scrapy.Request(url=url, callback=self.parse)

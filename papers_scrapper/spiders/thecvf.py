@@ -23,7 +23,7 @@ class TheCVFSpider(BaseSpider):
             else:
                 self.subpage = True
 
-    def start_requests(self):
+    async def start(self):
         #TODO verify why it is not calling parse automatically
         for url in self.start_urls:
             main_track = f'{url}{self.conference.upper()}{self.year}'

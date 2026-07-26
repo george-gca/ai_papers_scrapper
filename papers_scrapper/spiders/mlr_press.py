@@ -13,7 +13,7 @@ class MLRPressSpider(BaseSpider):
     def __init__(self, conference: str = '', year: str = ''):
         BaseSpider.__init__(self, conference, year)
 
-    def start_requests(self):
+    async def start(self):
         for url in self.start_urls:
             self.logger.info(f'Start scraping {url} for {self.year}')
             yield scrapy.Request(url=url, callback=self.parse)

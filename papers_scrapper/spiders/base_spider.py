@@ -6,6 +6,8 @@ from scrapy.spiders import CrawlSpider
 
 class BaseSpider(CrawlSpider):
     def __init__(self, conference: str, year: str):
+        super().__init__()
+
         html_regex = [
             '</b>',
             '</del>',

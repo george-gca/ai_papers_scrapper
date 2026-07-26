@@ -17,7 +17,7 @@ class SIGCHISpider(BaseSpider):
         # else:
             # self.start_urls = [f'https://chi{year}.acm.org/proceedings']
 
-    def start_requests(self):
+    async def start(self):
         for url in self.start_urls:
             self.logger.info(
                 f'Start scraping {url}')

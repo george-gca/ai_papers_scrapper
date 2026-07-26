@@ -13,7 +13,7 @@ class KDDSpider(BaseSpider):
     def __init__(self, year: str = ''):
         BaseSpider.__init__(self, 'kdd', year)
 
-    def start_requests(self):
+    async def start(self):
         for url in self.start_urls:
             if self.year != '2022':
                 conference_url = f'{url}kdd{self.year}/accepted-papers/toc'

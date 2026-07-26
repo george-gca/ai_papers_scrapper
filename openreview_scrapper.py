@@ -203,7 +203,6 @@ def _download_conference_info(
 
             except:
                 print(f'Error while trying to get papers submissions for {conference} {year} at {blind_url}')
-                import ipdb; ipdb.set_trace()
                 continue
 
     if len(submissions) == 0:

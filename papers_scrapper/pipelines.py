@@ -5,7 +5,6 @@
 
 
 import logging
-from functools import partial
 from pathlib import Path
 
 # useful for handling different item types with a single interface
@@ -41,7 +40,14 @@ class TsvExportPipeline:
         self._file_name = file_name
         self._fields_to_export = fields
 
-    def open_spider(self, spider: scrapy.spiders.Spider):
+    @classmethod
+    def from_crawler(cls, crawler: scrapy.crawler.Crawler, *args, **kwargs):
+        pipeline = cls(*args, **kwargs)
+        pipeline.crawler = crawler
+        return pipeline
+
+    def open_spider(self):
+        spider = self.crawler.spider
         paper_infos_path = Path('data') / spider.save_path / self._file_name
         _logger.debug(f'Saving papers\' informations to {paper_infos_path}')
 
@@ -55,11 +61,11 @@ class TsvExportPipeline:
             self.file_handler, fields_to_export=self._fields_to_export, delimiter=self._delimiter)
         self.csv_exporter.start_exporting()
 
-    def close_spider(self, spider: scrapy.spiders.Spider):
+    def close_spider(self):
         self.csv_exporter.finish_exporting()
         self.file_handler.close()
 
-    def process_item(self, item: PdfFilesItem, spider: scrapy.spiders.Spider):
+    def process_item(self, item: PdfFilesItem):
         if item['authors'] is not None:
             item['authors'] = item['authors'].replace('*', '')
             item['authors'] = item['authors'].replace(' ,', ',')
@@ -70,16 +76,20 @@ class TsvExportPipeline:
         return item
 
 
-PaperInfoTsvExportPipeline = partial(TsvExportPipeline,
-    file_name='paper_info.tsv',
-    fields=['title', 'abstract_url', 'pdf_url', 'source_url'],
-    )
-PaperAbstractTsvExportPipeline = partial(TsvExportPipeline,
-    file_name='abstracts.tsv',
-    fields=['title', 'abstract'],
-    )
-PaperAuthorsTsvExportPipeline = partial(TsvExportPipeline,
-    file_name='authors.tsv',
-    fields=['title', 'authors'],
-    )
+class PaperInfoTsvExportPipeline(TsvExportPipeline):
+    def __init__(self):
+        super().__init__(
+            file_name='paper_info.tsv',
+            fields=['title', 'abstract_url', 'pdf_url', 'source_url'],
+            )
+
+
+class PaperAbstractTsvExportPipeline(TsvExportPipeline):
+    def __init__(self):
+        super().__init__(file_name='abstracts.tsv', fields=['title', 'abstract'])
+
+
+class PaperAuthorsTsvExportPipeline(TsvExportPipeline):
+    def __init__(self):
+        super().__init__(file_name='authors.tsv', fields=['title', 'authors'])
 

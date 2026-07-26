@@ -16,7 +16,7 @@ class ACLSpider(BaseSpider):
     def __init__(self, conference: str='', year: str=''):
         BaseSpider.__init__(self, conference, year)
 
-    def start_requests(self):
+    async def start(self):
         #TODO verify why it is not calling parse automatically
         if self.conference.lower().startswith('sig'):
             conference_type = 'sigs'
