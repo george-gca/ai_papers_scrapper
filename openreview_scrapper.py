@@ -186,23 +186,23 @@ def _download_conference_info(
                 submissions += new_submissions
                 continue
 
-        except:
-            print(f'Error while trying to get papers submissions for {conference} {year} at {url}')
+        except Exception as e:
+            print(f'Error while trying to get papers submissions for {conference} {year} at {url}: {e!r}')
             try:
                 new_submissions = client.get_all_notes(invitation=blind_url, details='directReplies')
                 sleep(uniform(1., 2.))
                 if len(new_submissions) > 0:
                     submissions += new_submissions
                     continue
-        
+
                 lower_url = '/'.join(blind_url.split('/')[:-1] + [blind_url.split('/')[-1].lower()])
                 new_submissions = client.get_all_notes(invitation=lower_url, details='directReplies')
                 sleep(uniform(1., 2.))
                 if len(new_submissions) > 0:
-                    submissions += new_submissions    
+                    submissions += new_submissions
 
-            except:
-                print(f'Error while trying to get papers submissions for {conference} {year} at {blind_url}')
+            except Exception as e:
+                print(f'Error while trying to get papers submissions for {conference} {year} at {blind_url}: {e!r}')
                 continue
 
     if len(submissions) == 0:

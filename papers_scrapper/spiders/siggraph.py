@@ -21,28 +21,28 @@ class SIGGRAPHSpider(BaseSpider):
     def parse(self, response: scrapy.http.TextResponse):
         # inspect_response(response, self)
         if self.conference == 'siggraph':
-            xpath_str = '//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div/h4'
+            xpath_str = '//*[@id="post-423"]/div/div/div/div[3]/div[6]/div[2]/div/h4'
         elif self.conference == 'siggraph-asia':
-            xpath_str = '//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[1]/div/h4'
+            xpath_str = '//*[@id="post-423"]/div/div/div/div[3]/div[6]/div[1]/div/h4'
         else:
             raise ValueError(f'Conference {self.conference} not supported')
 
         for i, header in enumerate(response.xpath(xpath_str)):
             if header.xpath('text()').get().strip() == self.year:
                 if self.conference == 'siggraph':
-                    links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div[{i+2}]/div/ul/li/a') + \
-                            response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div[{i+2}]/div/ul/li/p/a')
+                    links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[6]/div[2]/div[{i+2}]/div/ul/li/a') + \
+                            response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[6]/div[2]/div[{i+2}]/div/ul/li/p/a')
                 else: # if self.conference == 'siggraph-asia':
-                    links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[1]/div[{i+2}]/div/ul/li/a') + \
-                            response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[1]/div[{i+2}]/div/ul/li/p/a')
+                    links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[6]/div[1]/div[{i+2}]/div/ul/li/a') + \
+                            response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[6]/div[1]/div[{i+2}]/div/ul/li/p/a')
 
                 if len(links) == 0:
                     if self.conference == 'siggraph':
-                        links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div[{i+2}]/div/ul/ul/li/a') + \
-                                response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[2]/div[{i+2}]/div/ul/ul/li/p/a')
+                        links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[6]/div[2]/div[{i+2}]/div/ul/ul/li/a') + \
+                                response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[6]/div[2]/div[{i+2}]/div/ul/ul/li/p/a')
                     else: # if self.conference == 'siggraph-asia':
-                        links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[1]/div[{i+2}]/div/ul/ul/li/a') + \
-                                response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[5]/div[1]/div[{i+2}]/div/ul/ul/li/p/a')
+                        links = response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[6]/div[1]/div[{i+2}]/div/ul/ul/li/a') + \
+                                response.xpath(f'//*[@id="post-423"]/div/div/div/div[3]/div[6]/div[1]/div[{i+2}]/div/ul/ul/li/p/a')
 
                 self.logger.info(f'Found {len(links)} links')
 

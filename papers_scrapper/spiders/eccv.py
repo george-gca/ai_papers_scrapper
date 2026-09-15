@@ -7,7 +7,7 @@ from ..items import PdfFilesItem
 
 class EccvSpider(BaseSpider):
     name = 'eccv'
-    allowed_domains = ['ecva.net/']
+    # allowed_domains = ['ecva.net/']
     start_urls = ['https://www.ecva.net/papers.php']
 
     def __init__(self,  year: str = ''):

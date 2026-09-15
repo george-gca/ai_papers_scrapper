@@ -7,7 +7,7 @@ from ..items import PdfFilesItem
 
 class KDDSpider(BaseSpider):
     name = 'kdd'
-    allowed_domains = ['kdd.org/']
+    # allowed_domains = ['kdd.org/']
     start_urls = ['https://kdd.org/']
 
     def __init__(self, year: str = ''):

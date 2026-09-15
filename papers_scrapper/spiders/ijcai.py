@@ -11,7 +11,7 @@ from ..items import PdfFilesItem
 # //*[starts-with(@id,'paper')]
 class IJCAISpider(BaseSpider):
     name = 'ijcai'
-    allowed_domains = ['www.ijcai.org/']
+    # allowed_domains = ['www.ijcai.org/']
     start_urls = ['https://www.ijcai.org/']
 
     def __init__(self, year: str=''):

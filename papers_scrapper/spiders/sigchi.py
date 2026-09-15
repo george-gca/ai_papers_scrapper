@@ -7,7 +7,7 @@ from ..items import PdfFilesItem
 
 class SIGCHISpider(BaseSpider):
     name = 'sigchi'
-    allowed_domains = ['st.sigchi.org/', 'chi2021.acm.org/']
+    # allowed_domains = ['st.sigchi.org/', 'chi2021.acm.org/']
     # start_urls = ['https://st.sigchi.org/publications/toc/chi-2020.html', 'https://st.sigchi.org/publications/toc/chi-2020-ea.html']
 
     def __init__(self, year: str = ''):
